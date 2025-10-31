@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}موقع اللجنة الوطنية{% endblock %}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced_top_image_styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ads_guard.css') }}">
+
+  <!-- CSS لـ Lightbox2 -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+
+<!-- سكربت Isotope و Lightbox2  -->
+<script src="https://cdn.jsdelivr.net/npm/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+
+  <style>
+  /* Reset & Base */
+  body {
+    font-family: "Cairo", sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  html, .logo-bar, .menu-bar, .navbar, .nav-link, .top-icons a, footer, .card {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+
+  /* Navbar */
+  .navbar .nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    font-size: 1.2rem;
+  }
+  .navbar .nav-link:hover {
+    color: #cdab35 !important;
+  }
+  .navbar.scrolled {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  /* Menu-bar */
+  .menu-bar {
+    border-top: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+    border-bottom: 2px solid #666;
+  }
+  .menu-bar .nav-link:hover {
+    color: #cdab35;
+    transform: scale(1.05);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .menu-bar .nav-item:hover i {
+    color: #cdab35;
+  }
+
+.menu-bar .nav-link i{
+  font-size: 2.5rem;
+  margin-bottom: 2px;
+}
+
+/* هوامش/حشوات أكبر قليلاً لتفادي الالتصاق */
+.menu-bar .navbar-nav .nav-link{
+  padding: .6rem 1rem;
+}
+.menu-bar .navbar-nav{
+  flex-wrap: nowrap;
+  gap: 1rem;            /* قلّل الفجوة إذا لزم */
+  overflow-x: auto;     /* تمرير أفقي عند الضيق بدل النزول سطر */
+  -webkit-overflow-scrolling: touch;
+}
+
+  /* Links */
+  a {
+    color: #cdab35;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #d2b97f;
+    text-decoration: underline;
+  }
+
+  /* Typography */
+  h1, h2, h3 {
+    color: #cdab35;
+  }
+  .text-shadow {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* Buttons */
+  .pn-send-btn{
+  background:var(--pn-primary);
+  color:var(--pn-text-on-primary);
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.12);
+  transition:background .2s ease, transform .06s ease;
+}
+.pn-send-btn:hover{ background:var(--pn-primary-hover); }
+.pn-send-btn:active{ transform:scale(.98); }
+
+/* لو فيها أيقونة SVG */
+.pn-send-btn svg path{ fill:var(--pn-text-on-primary); }
+
+/* حالة التعطيل (اختياري) */
+.pn-send-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+
+  /* Containers */
+  .container {
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+
+/* كبّر نص عناصر القائمة الرئيسية */
+.menu-bar .nav-link span{
+  font-size: 1.35rem;   /* غيّر الرقم كما تحب: 1.4rem, 1.5rem... */
+  font-weight: 700;     /* ثخانة أوضح */
+  line-height: 1.2;
+    white-space: nowrap;
+}
+
+
+
+/* على الشاشات الصغيرة لا نبالغ بالحجم (اختياري) */
+@media (max-width: 992px){
+  .menu-bar .nav-link span{ font-size: 1.15rem; }
+}
+
+
+
+  </style>
+</head>
+
+<body>
+  <!-- Announcements Block -->
+  {% block announcements %}{% endblock %}
+
+  <!-- Fixed Header -->
+  <header class="fixed-top">
+    <!-- Feedback Toggle -->
+    <div id="feedbackToggle" data-bs-toggle="offcanvas" data-bs-target="#feedbackPanel">
+      Your Opinion
+    </div>
+    <!-- Offcanvas Feedback Panel -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="feedbackPanel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Your Opinion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <form method="POST" action="/send_feedback">
+          <div class="mb-3">
+            <label class="form-label">Messege Type</label>
+            <select class="form-select" name="type" required>
+              <option value="اقتراح">Suggestion</option>
+              <option value="شكوى">Complain</option>
+              <option value="إطراء">Complement</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email (Optional)</label>
+            <input type="email" class="form-control" name="email" placeholder="example@gmail.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message Body</label>
+            <textarea class="form-control" name="message" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn pn-send-btn w-100">Send</button>
+        </form>
+      </div>
+    </div>
+
+ <!-- الشريط الأول: الشعار والنصوص وبلوك English والأيقونات -->
+<div class="bg-white logo-bar" style="box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin: 0;" >
+  <div class="container d-flex justify-content-between align-items-center" style="gap: 10px;">
+
+    <!-- جهة اليمين: الشعار والنصوص الموسّطة -->
+    <div class="d-flex align-items-center">
+      <img src="{{ url_for('static', filename='images/logo2.jpg') }}"
+           alt="شعار اللجنة الوطنية"
+           style="height: 90px;">
+      <div class="text-center mx-3">
+        <div   class="fs-5 fw-bold"  style="color: #888; margin-top: 4px; font-size: 1.1rem;">
+          منظمة التحرير الفلسطينية
+        </div>
+        <div class="fs-5 fw-bold" style="color: #59595c;">
+          اللجنة الوطنية الفلسطينية للتربية والثقافة والعلوم
+        </div>
+        <div class="fs-6 fw-bold" style="color: #888;">
+          Palestinian National Commission for Education, Culture and Science
+        </div>
+      </div>
+    </div>
+
+    <!-- جهة اليسار: English والأيقونات -->
+    <div class="d-flex" style="gap: 12px; align-items: center;">
+      <!-- حرك هذا الرابط لأعلى -->
+ <a href="{{ url_for('index') }}"
+   class="fw-semibold"
+   style="color: #cdab35; align-self: flex-start; margin-top: -20px;">
+  عربي
+</a>
+
+      <!-- حرك هذه الأيقونات لأسفل -->
+      <a href="https://www.youtube.com/channel/UCZuZcldb2U4YptLcl3Lj7eg"
+         target="_blank"
+         title="يوتيوب"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-youtube"></i>
+      </a>
+      <a href="https://www.facebook.com/Palestinian.Cultural.Educational.Forum/"
+         target="_blank"
+         title="فيسبوك"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-facebook"></i>
+      </a>
+      <a href="https://tiktok.com"
+         target="_blank"
+         title="تيك توك"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-tiktok"></i>
+      </a>
+      <a href="https://twitter.com"
+         target="_blank"
+         title="تويتر"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-twitter-x"></i>
+      </a>
+      <a href="#"
+         title="بحث"
+         data-bs-toggle="modal"
+         data-bs-target="#siteSearchModal"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-search"></i>
+      </a>
+
+      <a href="/sitemap"
+         title="خريطة الموقع"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-list"></i>
+      </a>
+      <a href="#"
+         id="theme-toggle"
+         title="الوضع الليلي / النهاري"
+         style="align-self: flex-end; margin-bottom: -20px;">
+        <i class="bi bi-moon"></i>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+    <!-- شعار يسار إضافي -->
+    <!--
+    <div class="d-flex align-items-center">
+      <img src="{{ url_for('static', filename='images/PLO_logo.png') }}" alt="شعار إضافي" style="height: 90px;">
+    </div>
+-->
+  </div>
+</div>
+
+
+    <!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg bg-white menu-bar shadow-sm" style="margin-top: 0;">
+  <div class="container d-flex justify-content-start">
+
+    <ul class="navbar-nav flex-row gap-4 text-center">
+      <li class="nav-item d-flex flex-column align-items-center border-start ps-3">
+        <a class="nav-link" href="/en"><i></i> <span>Main Page</span></a>
+      </li>
+      <li class="nav-item d-flex flex-column align-items-center border-start ps-3">
+        <a class="nav-link" href="/en/news"><i></i> <span>News</span></a>
+      </li>
+      <li class="nav-item d-flex flex-column align-items-center border-start ps-3">
+        <a class="nav-link" href="/en/gallery"><i></i> <span>Gallery</span></a>
+      </li>
+      <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+        <a class="nav-link" href="/en/about"><i></i> <span>About</span></a>
+      </li>
+            <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+        <a class="nav-link" href="/en/partners"><i></i> <span>Partners</span></a>
+      </li>
+             <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+        <a class="nav-link" href="/en/reports"><i></i> <span>Accomplishments Report</span></a>
+      </li>
+      </li>
+            <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+        <a class="nav-link" href="/en/announcements_page"><i ></i> <span>Accouncements</span></a>
+      </li>
+        <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+        <a class="nav-link" href="/en/project_form"><i ></i> <span>Project Submission</span></a>
+      </li>
+     <!--
+      <li class="nav-item d-flex flex-column align-items-center">
+        <a class="nav-link" href="/admin"><i class="bi bi-speedometer2"></i> <span>لوحة التحكم</span></a>
+      </li>
+      -->
+    </ul>
+  </div>
+</nav>
+
+  </header>
+
+  <!-- Main Content Starts Here -->
+  <div class="content-wrapper">
+    <div class="container py-4">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+  <script>
+  const toggleBtn = document.getElementById("theme-toggle");
+  const icon = toggleBtn.querySelector("i");
+  const currentTheme = localStorage.getItem("theme");
+
+  if (currentTheme === "dark") {
+    document.documentElement.classList.add("dark-mode");
+    icon.classList.replace("bi-moon", "bi-sun");
+  }
+
+  toggleBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    document.documentElement.classList.toggle("dark-mode");
+    const isDark = document.documentElement.classList.contains("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    icon.classList.toggle("bi-moon");
+    icon.classList.toggle("bi-sun");
+  });
+
+  window.addEventListener('scroll', function () {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 20) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+</script>
+
+
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='js/ads_guard.js') }}"></script>
+{% endblock %}
+
+<!-- Site Search Modal -->
+<div class="modal fade" id="siteSearchModal" tabindex="-1" aria-labelledby="siteSearchLabel" aria-hidden="true" dir="rtl">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="siteSearchLabel">ٍSearch in Website</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      </div>
+      <form id="siteSearchForm" class="modal-body d-flex flex-column gap-3" role="search" dir="ltr">
+        <input id="siteSearchInput" class="form-control" type="search" placeholder="Write the Words..." aria-label="بحث" required>
+
+        <div class="d-flex gap-2 align-items-center" dir="ltr">
+          <label class="fw-semibold">Destiniation:</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="scope" id="scopeNews" value="news" checked>
+            <label class="form-check-label" for="scopeNews">News</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="scope" id="scopeGallery" value="gallery">
+            <label class="form-check-label" for="scopeGallery">Gallery</label>
+          </div>
+        </div>
+
+        <div class="modal-footer px-0">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const modalEl   = document.getElementById('siteSearchModal');
+  const inputEl   = document.getElementById('siteSearchInput');
+  const formEl    = document.getElementById('siteSearchForm');
+
+  // فوكس تلقائي عند الفتح
+  modalEl.addEventListener('shown.bs.modal', function () {
+    inputEl.focus();
+    inputEl.select();
+  });
+
+  // إرسال البحث
+  formEl.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const q = inputEl.value.trim();
+    if (!q) return;
+
+    const scope = (new FormData(formEl)).get('scope') || 'news';
+    const isEnglish = window.location.pathname.startsWith('/en');
+
+    // حدّد الوجهة حسب اللغة والنطاق
+    let base = '/news';
+    if (scope === 'gallery') base = '/gallery';
+    if (isEnglish) base = '/en' + base;
+
+    // وجّه المستخدم مع الباراميتر q
+    const url = `${base}?q=${encodeURIComponent(q)}`;
+    window.location.href = url;
+  });
+
+  // اختصار لوحة المفاتيح: الضغط على "/" يفتح البحث
+  document.addEventListener('keydown', function (e) {
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.key === '/') {
+      e.preventDefault();
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }
+  });
+});
+</script>
+
+</body>
+
+
+
+
+</html>
+
+<!--
+{% include 'chatbot.html' %}
+-->

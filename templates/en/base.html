@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>اللجنة الوطنية للتربية والثقافة والعلوم</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>اللجنة الوطنية للتربية والثقافة والعلوم</h1>
+        <nav>
+            <a href="/">الرئيسية</a> |
+            <a href="/news">الأخبار</a> |
+            <a href="/activities">الأنشطة</a> |
+            <a href="/about">من نحن</a> |
+            <a href="/contact">اتصل بنا</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>© 2025 اللجنة الوطنية</p>
+    </footer>
+</body>
+</html>

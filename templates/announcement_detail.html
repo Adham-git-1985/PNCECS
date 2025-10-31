@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="pt-5"></div>
+<h2  class="text-primary text-center" >{{ announcement.title }}</h2>
+
+<div class="mb-4">
+ {% if announcement.images %}
+  <div class="mb-4">
+    {% for img in announcement.images %}
+      <img
+  src="{{ url_for('static', filename=img.filename) }}"
+  class="img-fluid mb-2 mx-auto d-block "
+  style="max-width: 400px;"
+  alt="صورة إعلان">
+    {% endfor %}
+  </div>
+{% endif %}
+
+</div>
+<div class="announcement-content fs-5" >
+  <p class="text-muted " >{{ announcement.created_at.strftime('%Y-%m-%d') }}</p>
+  {{ announcement.content | nl2br | urlize | safe }}
+</div>
+{% if announcement.attachments %}
+  <h5>مرفقات:</h5>
+  <ul>
+    {% for att in announcement.attachments %}
+      <li>
+        <a href="{{ url_for('static', filename=att.filename) }}"
+           download
+           target="_blank">
+          {{ att.filename.split('/')[-1] }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}

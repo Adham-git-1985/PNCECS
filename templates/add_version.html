@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}إضافة إصدار جديد{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 800px;">
+    <h2 class="mb-4 text-center">➕ إضافة إصدار جديد</h2>
+
+    <!-- رسائل الفلاش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- نموذج إضافة إصدار -->
+    <form method="POST" enctype="multipart/form-data" class="border p-4 bg-light rounded">
+        <div class="mb-3">
+            <label for="version_title" class="form-label">عنوان الإصدار</label>
+            <input type="text" class="form-control" id="version_title" name="version_title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="file" class="form-label">رفع ملف PDF</label>
+            <input type="file" class="form-control" id="file" name="file" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">رفع الصورة المصغرة</label>
+            <input type="file" class="form-control" id="thumbnail" name="thumbnail">
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">الفئة</label>
+            <select class="form-control" id="category" name="category" required>
+                <option value="مجلة بصمات">مجلة بصمات</option>
+                <option value="أوراق ودراسات">أوراق ودراسات</option>
+                <option value="مرصد الانتهاكات">مرصد الانتهاكات</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">💾 حفظ الإصدار</button>
+    </form>
+</div>
+{% endblock %}

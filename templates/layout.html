@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="{{ 'ar' if lang=='ar' else 'en' }}" dir="{{ 'rtl' if lang=='ar' else 'ltr' }}">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{{ t('site_name') }}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/enhanced_top_image_styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ads_guard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dir-lang.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/lightbox2/css/lightbox.min.css') }}">
+  <script src="{{ url_for('static', filename='vendor/lightbox2/js/lightbox.min.js') }}"></script>
+
+  <!-- CSS لـ Lightbox2 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+
+  <!-- سكربت Isotope و Lightbox2  -->
+  <script src="https://cdn.jsdelivr.net/npm/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+  <style>
+  /* Reset & Base */
+  body {
+    font-family: "Cairo", sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  html, .logo-bar, .menu-bar, .navbar, .nav-link, .top-icons a, footer, .card {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Navbar */
+  .navbar .nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    font-size: 1.2rem;
+  }
+  .navbar .nav-link:hover {
+    color: #cdab35 !important;
+  }
+  .navbar .nav-link.active span {
+    color: #cdab35;
+    font-weight: 800;
+  }
+  .navbar.scrolled {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  /* Menu-bar */
+  .menu-bar {
+    border-top: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+    border-bottom: 2px solid #666;
+  }
+  .menu-bar .nav-link:hover {
+    white-space: nowrap;
+    color: #cdab35;
+    transform: scale(1.05);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .menu-bar .nav-item:hover i {
+    color: #cdab35;
+  }
+
+  .menu-bar .nav-link i{
+    font-size: 2.5rem;
+    margin-bottom: 2px;
+  }
+
+  .menu-bar .navbar-nav .nav-link{
+    padding: .6rem 1rem;
+  }
+
+  .menu-bar .navbar-nav{
+    flex-wrap: nowrap;
+    gap: 1rem;            /* قلّل الفجوة إذا لزم */
+    overflow-x: auto;     /* تمرير أفقي عند الضيق بدل النزول سطر */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Links */
+  a {
+    color: #cdab35;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #d2b97f;
+    text-decoration: underline;
+  }
+
+  /* Typography */
+  h1, h2, h3 {
+    color: #cdab35;
+  }
+  .text-shadow {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* Buttons */
+  .pn-send-btn{
+    background:var(--pn-primary);
+    color:var(--pn-text-on-primary);
+    border:0;
+    border-radius:10px;
+    padding:10px 14px;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+    transition:background .2s ease, transform .06s ease;
+  }
+  .pn-send-btn:hover{ background:var(--pn-primary-hover); }
+  .pn-send-btn:active{ transform:scale(.98); }
+
+  /* لو فيها أيقونة SVG */
+  .pn-send-btn svg path{ fill:var(--pn-text-on-primary); }
+
+  /* حالة التعطيل (اختياري) */
+  .pn-send-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    box-shadow:none;
+  }
+
+  /* Containers */
+  .container {
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+
+  /* كبّر نص عناصر القائمة الرئيسية */
+  .menu-bar .nav-link span{
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  /* على الشاشات الصغيرة لا نبالغ بالحجم (اختياري) */
+  @media (max-width: 992px){
+    .menu-bar .nav-link span{ font-size: 1.15rem; }
+  }
+  </style>
+</head>
+
+<body class="{{ 'rtl' if lang=='ar' else 'ltr' }}">
+  <!-- نجعل الثيم "محدود" داخل themeRoot كي لا يؤثر على مودال تأكيد الإنجليزية -->
+  <div id="themeRoot" class="theme-root" data-theme="auto">
+
+  <!-- Announcements Block -->
+  {% block announcements %}{% endblock %}
+
+  <!-- Fixed Header -->
+  <header class="fixed-top">
+    <!-- Feedback Toggle -->
+<!-- Feedback Toggle -->
+<div id="feedbackToggle" data-bs-toggle="offcanvas" data-bs-target="#feedbackPanel">
+  {% if session.get('lang', 'ar') == 'en' %}
+    Your Feedback
+  {% else %}
+    رأيك يهمنا
+  {% endif %}
+</div>
+
+
+    <!-- Offcanvas Feedback Panel -->
+    <!-- Offcanvas Feedback Panel -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="feedbackPanel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title">
+      {% if session.get('lang', 'ar') == 'en' %}
+        Your Feedback Matters
+      {% else %}
+        رأيك يهمنا
+      {% endif %}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+            aria-label="{% if session.get('lang', 'ar') == 'en' %}Close{% else %}إغلاق{% endif %}">
+    </button>
+  </div>
+
+  <div class="offcanvas-body">
+    <form method="POST" action="/send_feedback">
+      <div class="mb-3">
+        <label class="form-label">
+          {% if session.get('lang', 'ar') == 'en' %}
+            Message Type
+          {% else %}
+            نوع الرسالة
+          {% endif %}
+        </label>
+        <select class="form-select" name="type" required>
+          {% if session.get('lang', 'ar') == 'en' %}
+            <option value="Suggestion">Suggestion</option>
+            <option value="Complaint">Complaint</option>
+            <option value="Compliment">Compliment</option>
+          {% else %}
+            <option value="اقتراح">اقتراح</option>
+            <option value="شكوى">شكوى</option>
+            <option value="إطراء">إطراء</option>
+          {% endif %}
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          {% if session.get('lang', 'ar') == 'en' %}
+            Email (optional)
+          {% else %}
+            البريد الإلكتروني (اختياري)
+          {% endif %}
+        </label>
+        <input type="email" class="form-control" name="email"
+               placeholder="{% if session.get('lang', 'ar') == 'en' %}example@gmail.com{% else %}example@gmail.com{% endif %}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          {% if session.get('lang', 'ar') == 'en' %}
+            Message
+          {% else %}
+            الرسالة
+          {% endif %}
+        </label>
+        <textarea class="form-control" name="message" rows="4" required></textarea>
+      </div>
+
+      <button type="submit" class="btn pn-send-btn w-100">
+        {% if session.get('lang', 'ar') == 'en' %}
+          Send
+        {% else %}
+          إرسال
+        {% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+
+
+    <!-- الشريط الأول: الشعار والنصوص وبلوك English والأيقونات -->
+    <div class="bg-white logo-bar" style="box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 0; margin: 0;" >
+      <div class="container d-flex justify-content-between align-items-center" style="gap: 10px;">
+
+        <!-- جهة اليمين: الشعار والنصوص الموسّطة -->
+        <div class="d-flex align-items-center">
+          <img src="{{ url_for('static', filename='images/logo2.jpg') }}"
+               alt="شعار اللجنة الوطنية"
+               style="height: 90px;">
+          <div class="text-center mx-3">
+            <div class="fs-5 fw-bold"  style="color: #888; margin-top: 4px; font-size: 1.1rem;">
+              منظمة التحرير الفلسطينية
+            </div>
+            <div class="fs-5 fw-bold" style="color: #59595c;">
+              اللجنة الوطنية الفلسطينية للتربية والثقافة والعلوم
+            </div>
+            <div class="fs-6 fw-bold" style="color: #888;">
+              Palestinian National Commission for Education, Culture and Science
+            </div>
+          </div>
+        </div>
+
+        <!-- جهة اليسار: English والأيقونات -->
+        <div class="d-flex" style="gap: 12px; align-items: center;">
+          <!-- محوّل اللغة -->
+         <nav class="lang-switch">
+          <a href="{{ url_for('set_lang', code='ar', next=request.path) }}">عربي</a> |
+          <a href="{{ url_for('set_lang', code='en', next=request.path) }}" class="lang-en-link">English</a>
+        </nav>
+
+          <!-- الأيقونات -->
+          <a href="https://www.youtube.com/channel/UCZuZcldb2U4YptLcl3Lj7eg"
+             target="_blank"
+             title="يوتيوب"
+             style="align-self: flex-end; margin-bottom: -20px;">
+            <i class="bi bi-youtube"></i>
+          </a>
+          <a href="https://www.facebook.com/Palestinian.Cultural.Educational.Forum/"
+             target="_blank"
+             title="فيسبوك"
+             style="align-self: flex-end; margin-bottom: -20px;">
+            <i class="bi bi-facebook"></i>
+          </a>
+          <a href="https://tiktok.com"
+             target="_blank"
+             title="تيك توك"
+             style="align-self: flex-end; margin-bottom: -20px;">
+            <i class="bi bi-tiktok"></i>
+          </a>
+          <a href="https://twitter.com"
+             target="_blank"
+             title="تويتر"
+             style="align-self: flex-end; margin-bottom: -20px;">
+            <i class="bi bi-twitter-x"></i>
+          </a>
+          <a href="#"
+             title="بحث"
+             data-bs-toggle="modal"
+             data-bs-target="#siteSearchModal"
+             style="align-self: flex-end; margin-bottom: -20px;">
+            <i class="bi bi-search"></i>
+          </a>
+          <a href="/sitemap"
+             title="خريطة الموقع"
+             style="align-self: flex-end; margin-bottom: -20px;">
+            <i class="bi bi-list"></i>
+          </a>
+          <!-- زر الوضع الليلي -->
+          <div class="ms-2">
+            <button id="themeToggle"
+        class="btn btn-sm btn-outline-secondary ms-2"
+        type="button" title="تغيير النمط">🌙</button>
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="tatreez-overlay"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg bg-white menu-bar shadow-sm" style="margin-top: 0;">
+      <div class="tatreez-ribbon">
+        <div class="inner"></div>
+      </div>
+      <div class="container d-flex justify-content-start">
+
+        {# المسار الحالي لتحديد الرابط النشط #}
+        {% set p = request.path %}
+
+        <ul class="navbar-nav flex-row gap-4 text-center">
+          <li class="nav-item d-flex flex-column align-items-center border-start ps-3">
+            <a class="nav-link {{ 'active' if p == '/' else '' }}" href="/">
+              <i></i> <span>{{ t('home') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/news') else '' }}" href="/news">
+              <i></i> <span>{{ t('news') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/gallery') else '' }}" href="/gallery">
+              <i></i> <span>{{ t('gallery') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/about') else '' }}" href="/about">
+              <i></i> <span>{{ t('about') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/partners') else '' }}" href="/partners">
+              <i></i> <span>{{ t('partners') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/reports') else '' }}" href="/reports">
+              <i></i> <span>{{ t('achievement_reports') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/announcements_page') else '' }}" href="/announcements_page">
+              <i ></i> <span>{{ t('announcements') }}</span>
+            </a>
+          </li>
+
+          <li class="nav-item d-flex flex-column align-items-center border-start  ps-3">
+            <a class="nav-link {{ 'active' if p.startswith('/project_form') else '' }}" href="/project_form">
+              <i ></i> <span>{{ t('project_form') }}</span>
+            </a>
+          </li>
+
+          <!--
+          <li class="nav-item d-flex flex-column align-items-center">
+            <a class="nav-link" href="/admin"><i class="bi bi-speedometer2"></i> <span>لوحة التحكم</span></a>
+          </li>
+          -->
+        </ul>
+      </div>
+    </nav>
+
+  </header>
+
+  <!-- Main Content Starts Here -->
+  <div class="content-wrapper">
+    <div class="container py-4">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  </div> <!-- /#themeRoot (نهاية نطاق الثيم) -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+  <script>
+  // أبقينا فقط منطق الـ scroll. (أزلنا سكربت الثيم القديم الذي كان يعتمد id مختلف و dark-mode class)
+  window.addEventListener('scroll', function () {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 20) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+  </script>
+
+  {% block extra_scripts %}
+    <script src="{{ url_for('static', filename='js/ads_guard.js') }}"></script>
+  {% endblock %}
+
+  <!-- Site Search Modal -->
+  <div class="modal fade" id="siteSearchModal" tabindex="-1" aria-labelledby="siteSearchLabel" aria-hidden="true" dir="rtl">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius:16px;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="siteSearchLabel">بحث في الموقع</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <form id="siteSearchForm" class="modal-body d-flex flex-column gap-3" role="search">
+          <input id="siteSearchInput" class="form-control" type="search" placeholder="اكتب كلمة البحث..." aria-label="بحث" required>
+
+          <div class="d-flex gap-2 align-items-center">
+            <label class="fw-semibold">الوجهة:</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="scope" id="scopeNews" value="news" checked>
+              <label class="form-check-label" for="scopeNews">الأخبار</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="scope" id="scopeGallery" value="gallery">
+              <label class="form-check-label" for="scopeGallery">المعرض</label>
+            </div>
+          </div>
+
+          <div class="modal-footer px-0">
+            <button type="submit" class="btn btn-primary">بحث</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- English Disclaimer Modal (خارج نطاق الثيم لضمان عدم تغييره) -->
+<div class="modal fade" id="enDisclaimerModal" tabindex="-1" aria-labelledby="enDisclaimerTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content en-disclaimer rounded-4 shadow-lg border-0">
+      <div class="modal-header border-0 en-disclaimer__header text-white">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-translate fs-4"></i>
+          <h5 class="modal-title mb-0" id="enDisclaimerTitle">تنبيه الترجمة / Translation Disclaimer</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق / Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="mb-2">
+          <strong>التذكير:</strong> العرض باللغة الإنجليزية يتم عبر <u>ترجمة آلية</u> وقد يحتوي على أخطاء.
+          لا تتحمل اللجنة الوطنية مسؤولية أي عدم دقة في الترجمة.
+        </p>
+        <p class="mb-3" dir="ltr">
+          <em><strong>Reminder:</strong> The English view is <u>machine-translated</u> and may contain errors.
+          PNCECS is not responsible for inaccuracies.</em>
+        </p>
+
+        <ul class="small mb-0 en-disclaimer__list">
+          <li>قد تختلف بعض المصطلحات والعبارات عن النص الأصلي.</li>
+          <li dir="ltr"><em>Some terms/phrases may differ from the original Arabic text.</em></li>
+        </ul>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between align-items-center">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="enDontShow">
+
+        <label class="form-check-label small" for="enDontShow">
+          لا تُظهر هذا التنبيه لمدة ساعة / Don’t show for 1 hour
+        </label>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-dismiss="modal">
+            إلغاء / Cancel
+          </button>
+          <a id="enProceedBtn" class="btn btn-primary rounded-3 px-4">
+            متابعة / Continue
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modalEl   = document.getElementById('siteSearchModal');
+    const inputEl   = document.getElementById('siteSearchInput');
+    const formEl    = document.getElementById('siteSearchForm');
+
+    // فوكس تلقائي عند الفتح
+    modalEl.addEventListener('shown.bs.modal', function () {
+      inputEl.focus();
+      inputEl.select();
+    });
+
+    // إرسال البحث
+    formEl.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const q = inputEl.value.trim();
+      if (!q) return;
+
+      const scope = (new FormData(formEl)).get('scope') || 'news';
+      const isEnglish = (document.documentElement.getAttribute('data-lang') === 'en');
+
+      // حدّد الوجهة حسب اللغة والنطاق
+      let base = '/news';
+      if (scope === 'gallery') base = '/gallery';
+      // لا نضيف /en — اللغة تُدار بالجلسة
+
+      // وجّه المستخدم مع الباراميتر q
+      const url = `${base}?q=${encodeURIComponent(q)}`;
+      window.location.href = url;
+    });
+
+    // اختصار لوحة المفاتيح: الضغط على "/" يفتح البحث
+    document.addEventListener('keydown', function (e) {
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || e.ctrlKey || e.altKey || e.metaKey) return;
+      if (e.key === '/') {
+        e.preventDefault();
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+      }
+    });
+  });
+  </script>
+
+<script>
+  (function () {
+    const STORAGE_KEY = 'enDisclaimerDismissedUntil';   // نخزن "حتى متى" نتجاهل المودال
+    const DURATION_MS = 60 * 60 * 1000;                 // ساعة واحدة
+
+    function getDismissUntil() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const t = raw ? parseInt(raw, 10) : 0;
+      return Number.isFinite(t) ? t : 0;
+    }
+
+    function setDismissFor(durationMs) {
+      const until = Date.now() + durationMs;
+      localStorage.setItem(STORAGE_KEY, String(until));
+    }
+
+    document.addEventListener('click', function (e) {
+      const link = e.target.closest('a.lang-en-link');
+      if (!link) return;
+
+      // إن كان الإعفاء لا يزال ساريًا، مرّر مباشرة
+      const dismissedUntil = getDismissUntil();
+      if (Date.now() < dismissedUntil) {
+        return; // لا نمنع الحدث؛ المتصفح ينتقل للرابط
+      }
+
+      // وإلا… اعرض المودال
+      e.preventDefault();
+
+      const modalEl   = document.getElementById('enDisclaimerModal');
+      const proceed   = document.getElementById('enProceedBtn');
+      const dontShow  = document.getElementById('enDontShow');
+
+      proceed.setAttribute('href', link.href);
+
+      proceed.onclick = function () {
+        if (dontShow.checked) {
+          setDismissFor(DURATION_MS); // امنع الظهور لمدة ساعة
+        }
+      };
+
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+    }, false);
+  })();
+</script>
+
+<!-- سكربت الثيم الموحّد (محدود داخل #themeRoot) -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const THEME_KEY = 'theme'; // 'light' | 'dark' | 'auto'
+  const root = document.getElementById('themeRoot');
+  const btn  = document.getElementById('themeToggle');
+
+  if (!root) return; // أمان
+
+  const systemIsDark = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const getStored = () => localStorage.getItem(THEME_KEY) || 'auto';
+  const resolve = (t) => (t === 'auto' ? (systemIsDark() ? 'dark' : 'light') : t);
+
+  function applyTheme(t) {
+    const resolved = resolve(t);              // light | dark
+    root.setAttribute('data-theme', t);       // القيمة الأصلية (قد تكون auto)
+    root.dataset.themeResolved = resolved;    // للمساعدة إن لزم
+    if (btn) btn.textContent = (resolved === 'dark') ? '☀️' : '🌙';
+    localStorage.setItem(THEME_KEY, t);
+    document.cookie = `theme=${t}; Path=/; Max-Age=7776000`;
+  }
+
+  function nextTheme(current) {
+    if (current === 'light') return 'dark';
+    if (current === 'dark')  return 'auto';
+    return 'light';
+  }
+
+  applyTheme(getStored());
+
+  if (window.matchMedia) {
+    const mm = window.matchMedia('(prefers-color-scheme: dark)');
+    mm.addEventListener('change', () => { if (getStored() === 'auto') applyTheme('auto'); });
+  }
+
+  btn?.addEventListener('click', () => {
+    const next = nextTheme(getStored());
+    applyTheme(next);
+  });
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+
+</body>
+</html>
+
+<!--
+{% include 'chatbot.html' %}
+-->

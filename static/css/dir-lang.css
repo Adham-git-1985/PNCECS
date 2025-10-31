@@ -1,0 +1,61 @@
+/* === ضبط عام بحسب الـ dir على عنصر html === */
+html[dir="rtl"] body { direction: rtl; text-align: center; }
+html[dir="ltr"] body { direction: ltr; text-align: left; }
+
+/* الحاويات تبقى منسّقة بشكل طبيعي */
+.container, .container-fluid, .card, .modal, .offcanvas {
+  text-align: initial;
+}
+
+/* عناوين الأقسام: اجعلها تتبع اتجاه الصفحة */
+.section-title, .announcements-header, .news-header, h1, h2, h3, h4, h5 {
+  text-align: inherit;
+}
+
+/* روابط التصفّح / الخبز (Breadcrumbs) */
+.breadcrumb { justify-content: start; }
+
+/* عناصر الـ Navbar: استخدم الخصائص المنطقية بدل left/right */
+.navbar .nav-link,
+.navbar-brand {
+  margin-inline: 0.25rem;
+  padding-inline: 0.5rem;
+}
+
+/* أدوات بحث بسيطة داخل الـ navbar */
+.navbar .form-control {
+  margin-inline-end: 0.5rem; /* يعادل margin-right بالإنجليزي و margin-left بالعربي تلقائياً */
+}
+
+/* أيقونات مع نص: اعطِ فراغ منطقي قبل/بعد الأيقونة بدل left/right */
+.icon-start { margin-inline-end: .35rem; }
+.icon-end   { margin-inline-start: .35rem; }
+
+/* أزرار pagination: تبقى طبيعية */
+.pagination { justify-content: center; }
+
+/* قوائم جانبية (مثل الإعلانات العمودية) */
+.announcements-vertical-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.announcements-vertical-list li {
+  padding-block: .35rem;
+  border-bottom: 1px solid #eee;
+}
+.announcements-vertical-list a {
+  text-decoration: none;
+}
+
+/* ماركيه الأخبار (إن وجد) */
+.news-marquee { padding: .25rem .5rem; background: #fafafa; border: 1px solid #eee; }
+
+/* أدوات مساعدة لمحاذاة نصوص بسرعة */
+.text-start-logic { text-align: start; }
+.text-end-logic   { text-align: end; }
+
+/* لو عندك بطاقات فيها عناوين طويلة، امنع الانكسار السيء */
+.card-title, .ann-title {
+  overflow-wrap: anywhere;
+}

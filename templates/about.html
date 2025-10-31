@@ -1,0 +1,454 @@
+{% extends "layout.html" %}
+{% block title %}<h3 class="section-title">
+  {{ pick('نبذة عن اللجنة', 'About the Commission') }}
+</h3>{% endblock %}
+
+{% block content %}
+<p></p><p></p><p></p>
+
+<h1 class="page-title mt-4 text-primary text-center">
+  {{ pick('نبذة عن اللجنة', 'About the Commission') }}
+</h1>
+
+<div class="accordion" id="aboutAccordion">
+
+  {# رئيس اللجنة الوطنية #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading2">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse2">
+        {{ pick('رئيس اللجنة الوطنية', 'Chair of the National Commission') }}
+      </button>
+    </h2>
+    <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <div class="d-flex align-items-start">
+          <img src="{{ url_for('static', filename='images/abuzuhri-150x150.jpg') }}"
+               alt="{{ pick('الدكتور علي زيدان أبو زهري', 'Dr. Ali Zidan Abu Zuhri') }}"
+               class="img-thumbnail me-3"
+               style="width: 150px; height: 150px; object-fit: cover;">
+          <p class="mb-0">
+            {{ pick(
+              'بتاريخ <strong>14/3/2019</strong> أصدر سيادة الرئيس <strong>محمود عباس</strong> مرسوماً بضم اللجنة الوطنية إلى دائرة التربية والتعليم العالي في منظمة التحرير الفلسطينية وتعيين الأستاذ الدكتور <strong>علي زيدان أبو زهري</strong> – عضو اللجنة التنفيذية – رئيساً للجنة الوطنية للتربية والثقافة والعلوم.',
+              'On <strong>14 March 2019</strong>, H.E. President <strong>Mahmoud Abbas</strong> issued a decree attaching the National Commission to the Higher Education Department of the PLO and appointing <strong>Dr. Ali Zidan Abu Zuhri</strong>—a member of the Executive Committee—as Chair of the National Commission for Education, Culture and Science.'
+            )|safe }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# أمين عام اللجنة الوطنية #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading4">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse4">
+        {{ pick('أمين عام اللجنة الوطنية', 'Secretary-General of the National Commission') }}
+      </button>
+    </h2>
+    <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <div class="d-flex align-items-start mb-3">
+          <img src="{{ url_for('static', filename='images/dr-jehad-ramadan.jpg') }}"
+               alt="{{ pick('د. جهاد رمضان','Dr. Jehad Ramadan') }}"
+               class="img-thumbnail me-3"
+               style="width: 120px; height: 160px; object-fit: cover;">
+          <div>
+            <p><strong>{{ pick('الإسم:', 'Name:') }}</strong> {{ pick('د. جهاد عبد الفتاح صالح رمضان', 'Dr. Jehad Abdelfattah Saleh Ramadan') }}</p>
+            <p><strong>{{ pick('العنوان:', 'Address:') }}</strong> {{ pick('فلسطين – رام الله', 'Palestine – Ramallah') }}</p>
+            <p><strong>{{ pick('هاتف:', 'Phone:') }}</strong> 0599675651</p>
+            <p><strong>Email:</strong> <a href="mailto:jehad.pncecs@gmail.com">jehad.pncecs@gmail.com</a></p>
+            <p><strong>{{ pick('المؤهلات العلمية:', 'Academic Qualifications:') }}</strong></p>
+            <ul>
+              <li>{{ pick('دكتوراه في التعلم والتعليم – جامعة النجاح الوطنية (2024)', 'PhD in Learning & Education – An-Najah National University (2024)') }}</li>
+              <li>{{ pick('ماجستير في إدارة الموارد – جامعة النجاح الوطنية (1999)', 'MSc in Resource Management – An-Najah National University (1999)') }}</li>
+              <li>{{ pick('بكالوريوس في التربية وعلم النفس – جامعة النجاح الوطنية (1995)', 'BA in Education & Psychology – An-Najah National University (1995)') }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <p><strong>{{ pick('الخبرات العملية:', 'Professional Experience:') }}</strong></p>
+        <ul>
+          <li>{{ pick('أمين عام اللجنة الوطنية الفلسطينية للتربية والثقافة والعلوم – منذ 11/8/2025', 'Secretary-General, PNCECS – since 11 Aug 2025') }}</li>
+          <li>{{ pick('مدير عام هيئة الشؤون المدنية الفلسطينية (1996–2025)', 'Director-General, Palestinian Civil Affairs Authority (1996–2025)') }}</li>
+          <li>{{ pick('رئيس مجلس إدارة الجمعية التعاونية (2012–الآن)', 'Chairman, Cooperative Association (2012–present)') }}</li>
+          <li>{{ pick('عضو مجلس إدارة هيئة العمل التعاوني في فلسطين (2021–الآن)', 'Board Member, Cooperative Work Authority – Palestine (2021–present)') }}</li>
+        </ul>
+
+        <p><strong>{{ pick('الخبرات الأكاديمية:', 'Academic Experience:') }}</strong></p>
+        <ul>
+          <li>{{ pick('محاضر في جامعة القدس المفتوحة (2004–2006)', 'Lecturer, Al-Quds Open University (2004–2006)') }}</li>
+          <li>{{ pick('نائب رئيس مجلس الأمناء – جامعة نابلس للعلوم التقنية والمهنية (2022–2025)', 'Vice Chair, Board of Trustees – Nablus University for Technical & Vocational Education (2022–2025)') }}</li>
+        </ul>
+
+        <p><strong>{{ pick('الخبرات النقابية:', 'Union/Association Experience:') }}</strong></p>
+        <ul>
+          <li>{{ pick('أمين سر اتحاد الجمعيات التعاونية الفلسطينية (2013–2015)', 'Secretary, Palestinian Union of Cooperative Associations (2013–2015)') }}</li>
+          <li>{{ pick('عضو الأمانة العامة للحركة التعاونية في فلسطين (2021–الآن)', 'General Secretariat Member, Cooperative Movement in Palestine (2021–present)') }}</li>
+        </ul>
+
+        <p><strong>{{ pick('إنجازات مؤسسية:', 'Institutional Achievements:') }}</strong></p>
+        <ul>
+          <li>{{ pick('قيادة وإدارة مؤسسات حكومية وأكاديمية لأكثر من 25 عامًا', 'Led governmental & academic institutions for 25+ years') }}</li>
+          <li>{{ pick('تطوير الأنظمة والإجراءات المؤسسية والحلول الرقمية', 'Developed institutional systems, procedures, and digital solutions') }}</li>
+          <li>{{ pick('بناء شراكات استراتيجية مع جهات محلية ودولية', 'Built strategic partnerships with local and international bodies') }}</li>
+          <li>{{ pick('مساهمة فاعلة في تطوير قطاع التعليم العالي والبحث العلمي', 'Active contribution to higher education and research development') }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# رؤيتنا ورسالتنا #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading7">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse7">
+        {{ pick('رؤيتنا ورسالتنا', 'Our Vision & Mission') }}
+      </button>
+    </h2>
+    <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <p class="fw-bold">{{ pick('رؤيتنا:', 'Vision:') }}</p>
+        <p>
+          {{ pick(
+            'تسعى اللجنة الوطنية إلى تعميق حضور الثقافة والإبداع والوعي التربوي والعلمي في الوجدان العام، بما يجعل هذه القيم جزءًا أصيلًا من الهوية الوطنية وحارسًا لذاكرة المجتمع من التشويه والطمس، تمهيدًا لمستقبل يفتح المجال للعطاء المعرفي والإبداعي.',
+            'The Commission seeks to deepen the presence of culture, creativity, and educational/scientific awareness in public consciousness, anchoring these values as part of national identity and safeguarding collective memory—paving the way for a future of intellectual and creative contribution.'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'يمثل عمل اللجنة قنطرة للوعي المؤسس للفضائل والقيم العليا التي تصون السياق المجتمعي.',
+            'Our work underpins virtues and higher values that safeguard the social fabric.'
+          ) }}
+        </p>
+
+        <p class="fw-bold">{{ pick('رسالتنا:', 'Mission:') }}</p>
+        <p>
+          {{ pick(
+            'بناء البنية التحتية للمؤسسات التربوية والثقافية والعلمية، وإعداد الإنسان الفلسطيني ثقافيًا وعلميًا وتربويًا، وتعميم الوصول إلى المعرفة من أجل التنمية وبناء الدولة الفلسطينية المستقلة وعاصمتها القدس.',
+            'To build the infrastructure of educational, cultural, and scientific institutions; empower Palestinians educationally and culturally; and broaden access to knowledge for development toward an independent Palestinian state with Jerusalem as its capital.'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'ترسيخ قيم الحرية والديمقراطية والكرامة والتضامن والإنصاف والتفاهم والسلام، المنسجمة مع مبادئ اليونسكو والأمم المتحدة.',
+            'We uphold the values of freedom, democracy, dignity, solidarity, equity, understanding, and peace—aligned with UNESCO and UN principles.'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'تعزيز الوحدة الفكرية عربياً وإسلامياً والمساهمة في السلم والأمن عبر التربية والعلم والثقافة والاتصال، وإبراز الثقافة العربية الإسلامية محورًا للمناهج مع الانفتاح على الثقافة العالمية.',
+            'We reinforce intellectual unity regionally and contribute to peace and security through education, science, culture, and communication—centering Arab-Islamic culture in curricula while remaining open to global cultures.'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'تأكيد الهوية الوطنية وحماية الاستقلال الفكري، والحفاظ على معالم الحضارة العربية والإسلامية في فلسطين، وخاصة في القدس الشريف.',
+            'We affirm national identity, protect intellectual independence, and preserve Arab-Islamic heritage in Palestine, especially in Jerusalem.'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'التأكيد على حقوق اللاجئين الفلسطينيين الإنسانية والسياسية وعودتهم إلى وطنهم.',
+            'We affirm the human and political rights of Palestinian refugees and their right of return.'
+          ) }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {# أهدافنا #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading9">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse9">
+        {{ pick('أهدافنا', 'Our Objectives') }}
+      </button>
+    </h2>
+    <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <p>
+          {{ pick(
+            'تحقيق الاتصال بين المنظمات العربية والدولية والإسلامية المختصة وبين الوزارات والمؤسسات الوطنية الفلسطينية داخل وخارج الوطن، لتمكين دراسة البرامج وتقويمها والاستفادة منها.',
+            'Facilitate coordination between specialized Arab, international, and Islamic organizations and Palestinian governmental/non-governmental institutions inside and outside Palestine to study, evaluate, and benefit from programs.'
+          ) }}
+        </p>
+        <ul class="list-group list-group-flush mt-3">
+          <li class="list-group-item">
+            {{ pick(
+              'تمكين المؤسسات والمراكز الفلسطينية التربوية والثقافية والعلمية من الاستفادة من برامج ومشاريع المنظمات الدولية والعربية والإسلامية.',
+              'Enable Palestinian educational, cultural, and scientific institutions to benefit from international/Arab/Islamic programs and projects.'
+            ) }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'تحقيق الاتصال الفكري والثقافي والتربوي بين فئات الشعب الفلسطيني داخل الوطن وخارجه.',
+              'Strengthen intellectual, cultural, and educational connectivity among Palestinians at home and abroad.'
+            ) }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'بذل الجهود لدى المنظمات الدولية لتمكين فلسطين ومؤسساتها من التمتع بحقوق العضوية والمشاركة، وتدريب الأطر الفلسطينية على الأساليب الحديثة.',
+              'Advocate with international organizations for Palestine’s membership rights and participation, and train Palestinian cadres on modern educational and managerial methods.'
+            ) }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'تنشيط الشراكات لتنفيذ الأهداف والبرامج بما يحقق السلام والعدل والتفاهم الدولي عبر التربية والثقافة والعلوم.',
+              'Activate partnerships to implement objectives and programs that advance peace, justice, and international understanding through education, culture, and science.'
+            ) }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# النشأة والتأسيس #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading1">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+        {{ pick('النشأة والتأسيس', 'Establishment & Evolution') }}
+      </button>
+    </h2>
+    <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            {{ pick(
+              'بناءً على قرار اللجنة التنفيذية لمنظمة التحرير بتاريخ <strong>5/8/1985</strong>، كُلّف المرحوم <em>ياسر عمرو</em> بوضع الأسس والنظم لإنشاء اللجنة الوطنية ضمن دائرة التربية والتعليم العالي.',
+              'Following a PLO Executive Committee decision on <strong>5 Aug 1985</strong>, the late <em>Yasser Amr</em> was tasked with setting the foundations and by-laws to establish the National Commission within the Higher Education Department.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'صادق الرئيس الراحل <strong>ياسر عرفات</strong> بتاريخ <strong>6/5/1992</strong> على النظام الأساسي للدائرة (قرار 4217) ونص على تشكيل اللجنة الوطنية وتعيين المرحوم <em>جهاد قرة شولي</em> أمينًا عامًا.',
+              'On <strong>6 May 1992</strong>, the late President <strong>Yasser Arafat</strong> approved the department’s statute (Decision 4217), stipulating the formation of the National Commission and appointing the late <em>Jihad Qarashouli</em> as Secretary-General.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'أُعيد تشكيل اللجنة في رام الله بتاريخ <strong>8/9/1994</strong> وتعيين <em>جهاد قرة شولي</em> أمينًا عامًا، واستمرت حتى 10/3/2005 ضمن مكتب الرئيس.',
+              'The Commission was reconstituted in Ramallah on <strong>8 Sep 1994</strong> with <em>Jihad Qarashouli</em> as Secretary-General, operating under the President’s Office until 10 Mar 2005.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'ألحق الرئيس <strong>محمود عباس</strong> اللجنة بدائرة التربية والتعليم العالي بتاريخ <strong>10/3/2005</strong>.',
+              'On <strong>10 Mar 2005</strong>, President <strong>Mahmoud Abbas</strong> attached the Commission to the Higher Education Department.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'صدر مرسوم بتاريخ <strong>10/7/2005</strong> بإلحاق اللجنة بمجلس الوزراء وتعيين <em>هشام مصطفى</em> أمينًا عامًا وتشكيل هيئة إشراف.',
+              'On <strong>10 Jul 2005</strong>, a decree attached the Commission to the Council of Ministers, appointing <em>Hesham Mustafa</em> as Secretary-General and forming a supervisory board.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'بتاريخ <strong>16/2/2006</strong> أُلغي القرار السابق وأُلحقت اللجنة مجددًا بدائرة التربية والتعليم العالي، وتعيين <em>إسماعيل التلاوي</em> أمينًا عامًا.',
+              'On <strong>16 Feb 2006</strong>, the previous decision was rescinded; the Commission returned to the Higher Education Department and <em>Ismail Al-Talawi</em> was appointed Secretary-General.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'كُلف <em>يحيى يخلف</em> برئاسة اللجنة بتاريخ <strong>15/8/2006</strong>.',
+              '<em>Yahya Yakhlaf</em> was assigned to chair the Commission on <strong>15 Aug 2006</strong>.'
+            )|safe }}
+          </li>
+          <li class="list-group-item">
+            {{ pick(
+              'بتاريخ <strong>12/6/2014</strong> عُيّن الشاعر <em>مراد السوداني</em> أمينًا عامًا خلفًا لـ <em>إسماعيل التلاوي</em>.',
+              'On <strong>12 Jun 2014</strong>, poet <em>Murad Al-Sudani</em> was appointed Secretary-General, succeeding <em>Ismail Al-Talawi</em>.'
+            )|safe }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# رؤساء اللجنة الوطنية #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading3">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+        {{ pick('رؤساء اللجنة الوطنية', 'Chairs of the National Commission') }}
+      </button>
+    </h2>
+    <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>{{ pick('د. ياسر عمرو','Dr. Yasser Amr') }}</strong> — <strong>5-8-1985</strong><br>
+            {{ pick('وزير تربية سابق ورئيس دائرة التربية والتعليم العالي في منظمة التحرير.', 'Former Minister of Education and Head of the Higher Education Department, PLO.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('أ. ياسر عبد ربه','Mr. Yasser Abed Rabbo') }}</strong><br>
+            {{ pick('عضو اللجنة التنفيذية لمنظمة التحرير.', 'Member of the PLO Executive Committee.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('د. رياض الخضري','Dr. Riyad Al-Khudari') }}</strong> — <strong>16-2-2006</strong><br>
+            {{ pick('عضو اللجنة التنفيذية لمنظمة التحرير.', 'Member of the PLO Executive Committee.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('أ. يحيى يخلف','Mr. Yahya Yakhlaf') }}</strong> — <strong>14-8-2006</strong><br>
+            {{ pick('وزير الثقافة السابق ورئيس المجلس الأعلى للثقافة.', 'Former Minister of Culture and Head of the Higher Council of Culture.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('أ. محمود إسماعيل','Mr. Mahmoud Ismail') }}</strong> — <strong>7-2-2015</strong><br>
+            {{ pick('عضو اللجنة التنفيذية لمنظمة التحرير الفلسطينية آنذاك.', 'Member of the PLO Executive Committee at the time.') }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# الأمناء العامون للجنة الوطنية #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading5">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+        {{ pick('الأمناء العامون للجنة الوطنية', 'Secretaries-General of the National Commission') }}
+      </button>
+    </h2>
+    <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>{{ pick('أ. جهاد قرة شولي','Mr. Jihad Qarashouli') }}</strong> — <strong>8-9-1994</strong><br>
+            {{ pick('عضو مجلس ثوري.', 'Member of the Revolutionary Council.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('أ. هشام مصطفى','Mr. Hesham Mustafa') }}</strong> — <strong>23-5-2005</strong><br>
+            {{ pick('أمين عام اللجنة الوطنية للتربية والثقافة والعلوم.', 'Secretary-General of the National Commission for Education, Culture and Science.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('أ. إسماعيل التلاوي','Mr. Ismail Al-Talawi') }}</strong> — <strong>8-3-2006</strong><br>
+            {{ pick('أمين عام اللجنة الوطنية للتربية والثقافة والعلوم.', 'Secretary-General of the National Commission for Education, Culture and Science.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('الشاعر مراد السوداني','Poet Murad Al-Sudani') }}</strong> — <strong>12-6-2014</strong><br>
+            {{ pick('أمين عام اللجنة الوطنية للتربية والثقافة والعلوم.', 'Secretary-General of the National Commission for Education, Culture and Science.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('د. دواس دواس','Dr. Dawas Dawas') }}</strong> — <strong>10-7-2019</strong><br>
+            {{ pick('أمين عام اللجنة الوطنية للتربية والثقافة والعلوم.', 'Secretary-General of the National Commission for Education, Culture and Science.') }}
+          </li>
+          <li class="list-group-item">
+            <strong>{{ pick('د. جهاد رمضان','Dr. Jehad Ramadan') }}</strong> — <strong>11-8-2025</strong><br>
+            {{ pick('أمين عام اللجنة الوطنية للتربية والثقافة والعلوم.', 'Secretary-General of the National Commission for Education, Culture and Science.') }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# نموذج البرامج والمشاريع #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading6">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse6">
+        {{ pick('نموذج البرامج والمشاريع', 'Programs & Projects Form') }}
+      </button>
+    </h2>
+    <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <p>
+          {{ pick(
+            'تحدد دائرة المشاريع أولويات المشاريع وتنفيذها وتوزيعها على المنظمات الأهلية بما يتوافق مع أهداف اللجنة الوطنية وأهداف الجهات الدولية الممولة (اليونسكو، الإيسيسكو، الألكسو...).',
+            'The Projects Department sets priorities, implements projects, and allocates them to NGOs in line with the Commission’s objectives and those of international funders (UNESCO, ICESCO, ALECSO, etc.).'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'تُعطى الأولوية لتمكين المرأة والتنوع الجغرافي والمناطق المتأثرة، إضافة إلى دعم الأنشطة الأكاديمية والثقافية والعلمية وصون التراث الفلسطيني.',
+            'Priority is given to women’s empowerment, geographic inclusion, affected areas, as well as support for academic, cultural, and scientific activities and the preservation of Palestinian heritage.'
+          ) }}
+        </p>
+        <ul class="list-unstyled">
+          <li>
+            <a href="{{ url_for('static', filename='forms/SUBMISSION-FORM-arabic.docx') }}"
+               class="btn btn-outline-primary btn-sm" target="_blank">
+              {{ pick('نموذج طلب الحصول على تمويل (عربي)', 'Funding Submission Form (Arabic)') }}
+            </a>
+          </li>
+          <li class="mt-2">
+            <a href="{{ url_for('static', filename='forms/SUBMISSION-FORM-eng.docx') }}"
+               class="btn btn-outline-secondary btn-sm" target="_blank">
+              {{ pick('نموذج التمويل (إنجليزي)', 'Funding Submission Form (English)') }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# التربية #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading11">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse11">
+        {{ pick('التربية', 'Education') }}
+      </button>
+    </h2>
+    <div id="collapse11" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <p>
+          {{ pick(
+            'تعمل اللجنة بالشراكة مع وزارة التربية والتعليم على ضمان حق النفاذ إلى تعليم ذي جودة في مختلف المحافظات.',
+            'In partnership with the Ministry of Education, the Commission works to ensure access to quality education across all governorates.'
+          ) }}
+        </p>
+        <p>
+          {{ pick(
+            'نؤمن بالدور الاستراتيجي لقطاع التعليم في تحقيق التنمية المستدامة وتطوير البحث العلمي.',
+            'We believe in education’s strategic role in achieving sustainable development and advancing scientific research.'
+          ) }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {# الثقافة #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading12">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse" data-bs-target="#collapse12">
+        {{ pick('الثقافة', 'Culture') }}
+      </button>
+    </h2>
+    <div id="collapse12" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <p>
+          {{ pick(
+            'تحافظ اللجنة على الموروث الثقافي وتعزّز الترابط المجتمعي من خلال دعم المؤسسات الثقافية وصون التراث المادي وغير المادي.',
+            'The Commission preserves cultural heritage and strengthens social cohesion by supporting cultural institutions and safeguarding tangible and intangible heritage.'
+          ) }}
+        </p>
+        <ul>
+          <li>{{ pick('تعزيز الترابط الثقافي والاجتماعي بين فئات الشعب في الوطن والشتات.', 'Enhance cultural and social ties among Palestinians at home and in the diaspora.') }}</li>
+          <li>{{ pick('دعم المؤسسات الثقافية الحكومية وغير الحكومية.', 'Support governmental and non-governmental cultural institutions.') }}</li>
+          <li>{{ pick('صون التراث عبر ترميم المواقع وصيانة المخطوطات.', 'Preserve heritage by restoring sites and conserving manuscripts.') }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  {# العلوم #}
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="heading13">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13">
+        {{ pick('العلوم', 'Science') }}
+      </button>
+    </h2>
+    <div id="collapse13" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+      <div class="accordion-body">
+        <p>
+          {{ pick(
+            'تسعى اللجنة إلى تعزيز البحث العلمي وبناء القدرات العلمية والتقنية من خلال شراكات محلية ودولية وبرامج منح وتبادل معرفي.',
+            'The Commission promotes scientific research and capacity-building through local and international partnerships, grants, and knowledge-exchange programs.'
+          ) }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ t('home') }} - {{ t('site_name') }}{% endblock %}
+
+{% block announcements %}
+<div class="announcements-vertical">
+  <div class="announcements-header">{{ t('announcements') }}</div>
+  <ul class="announcements-vertical-list">
+    {% for ann in announcements_list %}
+      <li>
+        <a href="{{ url_for('announcement_detail', id=ann.id) }}">
+          {{ ann.title }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% if top_images is defined and top_images %}
+<style>
+  .carousel-caption h4 a {
+    font-size: 1.1rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: #000 !important;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+  }
+  .carousel-caption h4 a:hover { background-color: #cdab35; color: #fff !important; }
+  .carousel-item img { transition: transform 0.5s ease; }
+  .carousel-item img:hover { transform: scale(1.1); transition: transform 0.5s ease; }
+  .carousel-caption { position: absolute; bottom: 50px; left: 20px; right: 20px; color: white; opacity: 0; animation: slideIn 1s forwards; }
+  @keyframes slideIn { 0% { transform: translateY(80px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  .top-image-badge { position: absolute; top: 15px; left: 15px; background-color: #cdab35; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.9rem; z-index: 10; }
+  canvas { border: 1px solid gold; }
+</style>
+
+<!-- PDF.js (إبقاء كما هو دون تغيير جوهري) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.177/pdf.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const thumbs = document.querySelectorAll("canvas.pdf-thumb");
+  thumbs.forEach(canvas => {
+    const url = canvas.dataset.pdfUrl;
+    const context = canvas.getContext("2d");
+    if (!window['pdfjsLib']) { console.error("PDF.js not loaded"); return; }
+    pdfjsLib.getDocument(url).promise
+      .then(pdf => pdf.getPage(1))
+      .then(page => {
+        const scale = 0.3;
+        const viewport = page.getViewport({ scale });
+        canvas.width  = viewport.width;
+        canvas.height = viewport.height;
+        page.render({ canvasContext: context, viewport });
+      })
+      .catch(err => console.error("PDF render error:", err));
+  });
+});
+</script>
+
+<div id="topCarousel" class="carousel slide mb-4" data-bs-ride="carousel" role="region" aria-label="{{ t('gallery') }}">
+  <div class="carousel-inner">
+    {% for img in top_images %}
+    <div class="carousel-item {% if loop.first %}active{% endif %}" style="position: relative;">
+      <div style="border: 4px solid #cdab35; border-radius: 8px; overflow: hidden;">
+        <img src="{{ url_for('static', filename='images/top_images/' + img.image) }}" class="img-fluid w-100" alt="{{ l(img, 'title') or t('gallery') }}" loading="lazy">
+      </div>
+
+      {% if img.created_at and img.created_at >= (now - timedelta(days=7)) %}
+        <span class="top-image-badge">{{ pick('جديد', 'New') }}</span>
+      {% endif %}
+
+      <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+        {% if img.news_id %}
+          <h4>
+            <a href="{{ url_for('news_detail', news_id=img.news_id) }}" rel="noopener noreferrer">
+              📌 {{ l(img, 'description') or pick('تفاصيل الخبر', 'News details') }}
+            </a>
+          </h4>
+        {% elif img.news_title %}
+          <h4>
+            <a href="{{ url_for('news') }}?q={{ l(img, 'news_title') }}" rel="noopener noreferrer">
+              🔎 {{ pick('بحث عن', 'Search for') }}: {{ l(img, 'news_title') }}
+            </a>
+          </h4>
+        {% endif %}
+        {% if img.news_content %}
+          <p class="mb-0 small text-white">{{ (l(img, 'news_content') or '')[:150] }}...</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#topCarousel" data-bs-slide="prev">
+    <span class="custom-carousel-arrow" aria-hidden="true">❮</span>
+    <span class="visually-hidden">{{ t('prev') }}</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#topCarousel" data-bs-slide="next">
+    <span class="custom-carousel-arrow" aria-hidden="true">❯</span>
+    <span class="visually-hidden">{{ t('next') }}</span>
+  </button>
+</div>
+{% endif %}
+
+<!-- أحدث الأخبار -->
+<div class="container my-5">
+  <h2 class="mb-4" style="color: #cdab35; text-align: center; border: 2px solid #cdab35; padding: 10px 20px; border-radius: 8px;">
+    📰 {{ t('latest_news') }}
+  </h2>
+
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for item in news_list[:6] %}
+    <div class="col">
+      <div class="card h-100">
+        {% set image = item.gallery[0] if item.gallery else None %}
+        {% if image %}
+        <a href="{{ url_for('static', filename='images/gallery/' + image.filename) }}" data-lightbox="index-news" data-title="{{ l(item, 'title') }}">
+          <img src="{{ url_for('static', filename='images/gallery/' + image.filename) }}" class="card-img-top" alt="{{ l(item, 'title') }}" loading="lazy">
+        </a>
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title" style="color: #cdab35;">{{ l(item, 'title') }}</h5>
+          <p class="card-text">{{ (l(item, 'content') or '')[:120] }}...</p>
+          <a href="{{ url_for('news_detail', news_id=item.id) }}" class="btn btn-sm btn-outline-primary" style="border-color: #cdab35; color: #cdab35;">
+            {{ t('read_more') }}
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <section id="latest-news" class="mb-3">
+    <div class="d-flex justify-content-center mt-4">
+      <a href="{{ url_for('news') }}" class="btn btn-primary">
+        {{ t('view_all') }} {{ t('news') }}
+      </a>
+    </div>
+  </section>
+</div>
+
+<!-- قسم الإصدارات -->
+<h2 class="mt-n3 mb-4" style="color: #cdab35; text-align: center; border: 2px solid #cdab35; padding: 10px 20px; border-radius: 8px;">
+  {{ pick('الإصدارات', 'Publications') }}
+</h2>
+
+<!-- خلفية كريمية -->
+<div class="mb-4 p-4 rounded" style="background-color: #f8f9fa;">
+  {% for category, version_list in {'مجلة بصمات': versions_basmat, 'أوراق ودراسات': versions_papers, 'مرصد الانتهاكات': versions_marsad}.items() %}
+    <div class="d-flex justify-content-start align-items-center mb-3">
+      <h3 class="basamat-title">{{ category }}</h3>
+    </div>
+
+    <div id="versionsCarousel{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% set per_slide = 3 %}
+        {% set total = version_list|length %}
+        {% for start in range(0, total, per_slide) %}
+          <div class="carousel-item {% if start == 0 %}active{% endif %}">
+            <div class="row justify-content-center gx-3">
+              {% for version in version_list[start:start+per_slide] %}
+              <div class="col-4 text-center">
+                <a href="{{ url_for('static', filename=version.file_path) }}" target="_blank">
+                  <canvas class="pdf-thumb mx-auto"
+                          data-pdf-url="{{ url_for('static', filename=version.file_path) }}"
+                          style="max-width:200px; max-height:200px; border: 3px solid #cdab35; border-radius: 8px;"></canvas>
+                  <p class="version-title">{{ l(version, 'title') }}</p>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#versionsCarousel{{ loop.index }}" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ t('prev') }}</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#versionsCarousel{{ loop.index }}" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">{{ t('next') }}</span>
+      </button>
+    </div>
+
+    {% if not loop.last %}
+      <hr class="my-5" style="border-top: 2px solid #cdab35;">
+    {% endif %}
+  {% endfor %}
+</div>
+
+<!-- روابط سريعة -->
+<div class="container my-5">
+  <h2 class="mb-4" style="color: #cdab35; text-align: center; border: 2px solid #cdab35; padding: 10px 20px; border-radius: 8px;">
+    {{ pick('روابط سريعة', 'Quick Links') }}
+  </h2>
+  <div class="row text-center">
+    <div class="col-md-3 mb-3">
+      <a href="/news" class="btn btn-outline-secondary w-100" style="border-color: #cdab35; color: #cdab35;">{{ t('news') }}</a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <a href="/partners" class="btn btn-outline-secondary w-100" style="border-color: #cdab35; color: #cdab35;">
+        {{ pick('شركاء اللجنة الوطنية', 'PNCECS Partners') }}
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <a href="{{ url_for('cultural_forum') }}" class="btn btn-outline-secondary w-100" style="border-color: #cdab35; color: #cdab35;">
+        {{ pick('الملتقى الثقافي', 'Cultural Forum') }}
+      </a>
+    </div>
+    <div class="col-md-3 mb-3">
+      <a href="/gallery" class="btn btn-outline-secondary w-100" style="border-color: #cdab35; color: #cdab35;">{{ t('gallery') }}</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

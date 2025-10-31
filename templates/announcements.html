@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ t('announcements') }}{% endblock %}
+
+{% block content %}
+  {# رسائل الفلاش #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category=='success' else 'danger' }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ pick('إغلاق', 'Close') }}"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <h1 class="page-title mt-4 text-primary text-center">{{ t('announcements') }}</h1>
+
+  {# نموذج الفلترة حسب التاريخ #}
+  <form method="GET" class="row g-3 align-items-end mb-4" role="search" aria-label="{{ pick('فلترة الإعلانات بالتاريخ', 'Filter announcements by date') }}">
+    <div class="col-md-3">
+      <label for="date_from" class="form-label">{{ pick('من تاريخ', 'From date') }}</label>
+      <input type="date"
+             class="form-control"
+             id="date_from"
+             name="date_from"
+             value="{{ request.args.get('date_from', '') }}">
+    </div>
+    <div class="col-md-3">
+      <label for="date_to" class="form-label">{{ pick('إلى تاريخ', 'To date') }}</label>
+      <input type="date"
+             class="form-control"
+             id="date_to"
+             name="date_to"
+             value="{{ request.args.get('date_to', '') }}">
+    </div>
+    <div class="col-md-3">
+      <button type="submit" class="btn btn-primary">{{ pick('فلترة', 'Filter') }}</button>
+      <a href="{{ url_for('announcements_page') }}" class="btn btn-outline-secondary">{{ pick('إعادة عرض الكل', 'Reset') }}</a>
+    </div>
+  </form>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>{{ pick('العنوان', 'Title') }}</th>
+        <th>{{ pick('تاريخ العرض', 'Date') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ann in announcements %}
+        <tr>
+          <td>
+            <a href="{{ url_for('announcement_detail', id=ann.id) }}"
+               class="ann-link"
+               target="_blank"
+               rel="noopener noreferrer">
+              {{ l(ann, 'title') }}
+            </a>
+          </td>
+          <td>{{ ann.created_at.strftime('%Y-%m-%d') }}</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="3" class="text-center text-muted">
+            {{ pick('لا توجد إعلانات في هذا النطاق.', 'No announcements in this range.') }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

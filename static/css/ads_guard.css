@@ -1,0 +1,51 @@
+/* === PATCH: Prevent ads sidebar overlap (zoom-safe) ===================== */
+
+/* Default variables */
+:root{
+  --ads-w: 0px;        /* width reserved on the right for fixed ads */
+  --header-h: 168px;   /* fallback header height */
+  --ads-gap: 20px;     /* small breathing space */
+}
+
+/* Reserve space for ads on large screens only */
+@media (min-width: 1200px){
+  .content-wrapper{
+    padding-inline-end: calc(var(--ads-w, 0px) + var(--ads-gap, 0px));
+  }
+  /* Position the vertical announcements under the fixed header */
+  .announcements-vertical{
+    position: fixed;
+    inset-inline-end: 0;
+    top: calc(var(--header-h, 120px) + 16px);
+    z-index: 1040; /* lower than header if header uses 1050+ */
+  }
+}
+
+/* On smaller screens or when ads are collapsed, let it flow normally */
+@media (max-width: 1199.98px){
+  .announcements-vertical{
+    position: static;
+  }
+  .content-wrapper{
+    padding-inline-end: 0;
+  }
+}
+
+/* Safety: keep hero images self-contained */
+.top-images,
+#topCarousel{
+  position: relative;
+  z-index: 10;
+}
+.announcements-vertical{ z-index: 5; }
+
+/* Optional: ensure image hover zoom won't bleed visually */
+.carousel-item img{ display:block; }
+
+:root{ --ads-extra-offset: 24px; }
+
+@media (min-width: 1200px){
+  .announcements-vertical{
+    top: calc(var(--header-h, 120px) + 26px + var(--ads-extra-offset, 0px));
+  }
+}

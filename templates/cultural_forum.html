@@ -1,0 +1,198 @@
+{% extends "layout.html" %}
+{% block title %}الملتقى الثقافي{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-5" dir="rtl" id="top">
+  <div class="row">
+
+    <!-- الشريط الجانبي -->
+    <aside class="col-lg-3 mb-4">
+      <div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
+        <div class="card-body">
+          <h5 class="fw-bold mb-3" style="color:#cdab35;">🗂️ عناوين الأخبار</h5>
+          <ul id="sideList" class="list-group small" style="max-height:70vh; overflow-y:auto; border-radius:8px;">
+            {% for post in posts %}
+            <li class="list-group-item list-group-item-action" id="link{{ loop.index }}">
+              <a href="#news{{ loop.index }}" class="text-decoration-none d-block py-1" style="color:#003366;">
+                {{ post.title }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- المحتوى الرئيسي -->
+    <section class="col-lg-9" id="forumContent">
+      <!-- رأس الصفحة داخل PDF -->
+      <div id="pdfHeader" class="text-center mb-5" style="border-bottom:2px solid #cdab35; padding-bottom:10px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="PNCECS Logo"
+             style="max-height:80px; margin-bottom:10px;">
+        <h2 style="color:#cdab35; font-weight:bold;">🎭 الملتقى الثقافي</h2>
+      </div>
+
+      {% for post in posts %}
+      <article id="news{{ loop.index }}" class="news-item mb-5 pb-5 border-bottom" style="border-color:#cdab35 !important;">
+        <h3 class="fw-bold mb-3" style="color:#003366; font-size:1.6rem;">{{ post.title }}</h3>
+
+{% if post.images %}
+<div class="gallery text-center mb-3">
+
+  <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+    {% for img in post.images %}
+    <a href="{{ url_for('static', filename='images/cultural_forum/' + img) }}"
+       data-lightbox="gallery-{{ loop.index0 }}-{{ loop.index }}"
+       data-title="{{ post.title }}">
+      <img src="{{ url_for('static', filename='images/cultural_forum/' + img) }}"
+           alt="{{ post.title }}"
+           class="img-thumbnail shadow-sm"
+           style="width:180px; height:130px; object-fit:cover; border:2px solid #eee; border-radius:10px;">
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if post.images|length > 1 %}
+  <button class="btn btn-outline-warning btn-sm fw-bold"
+          onclick="openGallery('{{ loop.index0 }}')"
+          style="border-color:#cdab35; color:#cdab35; border-radius:20px;">
+    ⬈ عرض كل الصور
+  </button>
+  {% endif %}
+</div>
+{% endif %}
+
+
+
+
+
+        <div class="news-content fs-5 lh-lg" style="text-align:justify;">
+          {{ post.content|safe }}
+        </div>
+
+        <div class="text-end mt-3">
+          <a href="#top" class="btn btn-sm btn-outline-secondary rounded-pill">🔝 إلى الأعلى</a>
+        </div>
+      </article>
+      {% endfor %}
+
+      <!-- أزرار التحميل -->
+      <div class="text-center mt-5 d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('download_cultural_forum_images') }}" class="btn btn-warning px-4 py-2 rounded-pill shadow">
+          📦 تحميل جميع الصور كملف ZIP
+        </a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- زر عائم للرجوع للأعلى -->
+<button id="backToTop" class="btn btn-warning shadow"
+        style="position:fixed; bottom:30px; left:30px; display:none; border-radius:50%; width:50px; height:50px;">
+  ⬆️
+</button>
+
+<style>
+  html { scroll-behavior: smooth; }
+  .news-item p { margin-bottom: 1rem; }
+  .news-item img:hover { transform: scale(1.02); transition: all 0.3s ease-in-out; }
+  #backToTop:hover { background-color: #cdab35; }
+  .list-group-item.active { background-color: #cdab35 !important; border-color: #cdab35 !important; }
+  .list-group-item.active a { color: white !important; font-weight: bold; }
+
+  /* لضمان أن الرأس يظهر في PDF */
+  @media print {
+    #pdfHeader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+    }
+    body { margin-top: 150px; }
+  }
+</style>
+
+<!-- مكتبة توليد PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+  // زر العودة للأعلى
+  window.addEventListener("scroll", function() {
+    const btn = document.getElementById("backToTop");
+    btn.style.display = window.scrollY > 300 ? "block" : "none";
+  });
+
+  document.getElementById("backToTop").addEventListener("click", function() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Scroll Spy
+  const sections = document.querySelectorAll(".news-item");
+  const links = document.querySelectorAll("#sideList .list-group-item");
+
+  window.addEventListener("scroll", () => {
+    let current = "";
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop - 120;
+      if (scrollY >= sectionTop) current = section.getAttribute("id");
+    });
+    links.forEach((li) => {
+      li.classList.remove("active");
+      if (li.querySelector("a").getAttribute("href") === "#" + current) {
+        li.classList.add("active");
+      }
+    });
+  });
+
+  // 📄 توليد ملف PDF مع الرأس الرسمي
+  document.getElementById("downloadPDF").addEventListener("click", () => {
+    const element = document.getElementById("forumContent");
+    const options = {
+      margin: 0.5,
+      filename: "الملتقى_الثقافي.pdf",
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+    };
+
+    // توليد PDF يتضمن الرأس
+    html2pdf().set(options).from(element).toPdf().get('pdf').then(function (pdf) {
+      const totalPages = pdf.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(10);
+        pdf.text("اللجنة الوطنية الفلسطينية للتربية والثقافة والعلوم - PNCECS", pdf.internal.pageSize.getWidth() / 2, 0.5, { align: "center" });
+      }
+    }).save();
+  });
+</script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox-plus-jquery.min.js"></script>
+
+<script>
+function openGallery(postIndex) {
+  const links = document.querySelectorAll(`[data-lightbox^="gallery-${postIndex}-"]`);
+  if (links.length > 0) {
+    links[0].click(); // يفتح أول صورة في المجموعة
+  }
+}
+</script>
+
+<style>
+.gallery a img:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+  border-color: #cdab35;
+}
+.btn-outline-warning:hover {
+  background-color: #cdab35;
+  color: white !important;
+}
+</style>
+
+
+
+
+{% endblock %}

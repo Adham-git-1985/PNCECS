@@ -1,0 +1,946 @@
+/* Reset for consistent styling across browsers */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* الألوان الأساسية */
+:root {
+    --primary-color: #cdab35; /* ذهبي */
+    --primary: #0d6efd;      /* اللون الذهبي PNCECS */
+    --link: #cdab35;
+    --secondary-color: #009933; /* أخضر */
+    --light-gray: #f4f6f8; /* لون رمادي فاتح */
+    --dark-gray: #333; /* لون داكن */
+    --navbar-color: #fff; /* لون شريط التنقل أبيض */
+}
+
+/* الخط الأساسي */
+body {
+    font-family: "Cairo", sans-serif;
+    background-color: #f5f5dc;
+    color: #333333;
+    line-height: 1.6;
+}
+
+/* الترويسة */
+.navbar {
+    background-color: var(--navbar-color);
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 0;  /* إزالة المسافة أسفل الشريط */
+    padding-bottom: 0; /* إزالة الحشو أسفل الشريط */
+}
+
+.navbar .nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+.navbar .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+.navbar-brand img {
+    height: 90px;
+    margin-top: 0px;
+}
+
+/* الأزرار */
+/* زر رئيسي بتدرّج ذهبي PNCECS */
+.btn-primary {
+  background: linear-gradient(180deg, #d6b35a 0%, #b38a1b 100%);
+  border: 1px solid #b38a1b;
+  color: #fff;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, #e6c870 0%, #b38a1b 100%);
+  transform: scale(1.03);
+  border-color: #a57e18;
+  color: #fff;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: linear-gradient(180deg, #d6b35a 0%, #b38a1b 100%);
+}
+
+/* زر رئيسي في الوضع الداكن */
+.theme-root[data-theme="dark"] .btn-primary,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .btn-primary {
+  background: linear-gradient(180deg, #b38a1b 0%, #7a5a0f 100%);
+  border: 1px solid #7a5a0f;
+  color: #fff;
+}
+
+.theme-root[data-theme="dark"] .btn-primary:hover,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .btn-primary:hover {
+  background: linear-gradient(180deg, #cda33a 0%, #8f6e16 100%);
+  border-color: #8f6e16;
+  color: #fff;
+}
+
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* رؤوس الأقسام */
+h1, h2, h3, h4, h5 {
+font-family: 'Tajawal', sans-serif;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* بطاقات الأخبار والصور */
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-radius: 0.5rem;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+/* شريط الأخبار المتحرك */
+.news-marquee {
+    background-color: var(--secondary-color);
+    color: #000;
+    font-weight: bold;
+}
+
+/* التذييل */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* فاصل الروابط */
+.nav-separator {
+    color: #999;
+    padding: 0 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+/* روابط الشريط العلوي */
+.top-icons a {
+    color: #444;
+    font-size: 1.1rem;
+    margin-left: 10px;
+}
+
+.top-icons a:hover {
+    color: var(--primary-color);
+}
+
+
+/* الوضع الليلي عند تفعيل الكلاس .dark-mode */
+html.dark-mode {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
+html.dark-mode html,
+html.dark-mode body {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
+html.dark-mode .navbar {
+    background-color: #222;
+    border-bottom: 2px solid #444;
+}
+
+html.dark-mode .navbar .nav-link {
+    color: #f0f0f0 !important;
+}
+
+html.dark-mode .navbar .nav-link:hover {
+    color: #ffd700 !important;
+}
+
+html.dark-mode .card {
+    background-color: #2a2a2a;
+    color: #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+html.dark-mode .card-title {
+    color: #ffd700;
+}
+
+html.dark-mode .btn-primary {
+    background-color: #ffd700;
+    color: #000;
+    border-color: #ffd700;
+}
+
+html.dark-mode .btn-primary:hover {
+    background-color: #e6c200;
+    border-color: #e6c200;
+}
+
+html.dark-mode footer {
+    background-color: #333;
+    color: #ccc;
+}
+
+html.dark-mode .top-icons a {
+    color: #ccc;
+}
+
+html.dark-mode .top-icons a:hover {
+    color: #ffd700;
+}
+
+html.dark-mode .nav-separator {
+    color: #aaa;
+}
+
+html.dark-mode .news-marquee {
+    background-color: #005522;
+    color: #fff;
+}
+
+
+html.dark-mode .logo-bar {
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #444;
+}
+
+
+html.dark-mode .logo-bar span {
+    color: #f0f0f0;
+}
+
+/* بنر ذهبي أسفل الصور */
+/* بنر ذهبي أسفل الصور */
+/* إضافة هذا الكود لضبط الشريط الذهبي */
+.gold-banner {
+    width: 98%;
+    height: 10px; /* اجعل هذا الارتفاع مناسبًا ليطابق ارتفاع الصور */
+    background-color: #cdab35; /* اللون الذهبي */
+    margin-top: 0px; /* المسافة بين الصور والشريط */
+}
+
+
+/* لضبط الصور العلوية داخل Flexbox */
+.container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-wrap: center ;
+     margin-top: 0; /* إزالة المسافة العلوية من الحاوية */
+}
+
+.row {
+    width: 100%;
+}
+
+/* تعديل المسافات بين الصور */
+.col-md-6 {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: left;
+}
+
+
+/* تقليل المسافة بين الصور والشريط الذهبي */
+.row.g-2 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.custom-carousel-arrow {
+    font-size: 3rem;
+    color: #cdab35;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    padding: 10px 18px;
+    transition: 0.3s ease;
+  }
+
+  .custom-carousel-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+  }
+
+  .custom-nav .nav-link {
+  color: #cdab35;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.custom-nav .nav-link:hover {
+  color: #8a6c1c;
+  text-decoration: none;
+}
+
+.custom-nav i {
+  margin-left: 5px;
+}
+
+
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+  background-color: #fff; /* خلفية بيضاء للأيقونات */
+  border-radius: 50%; /* جعل الأيقونات دائرية */
+  border: 2px solid #cdab35; /* إضافة حدود ذهبية حول الأيقونات */
+  width: 40px; /* تحديد حجم الأيقونة */
+  height: 40px; /* تحديد ارتفاع الأيقونة */
+}
+
+.carousel-control-prev, .carousel-control-next {
+  width: 50px; /* تحديد عرض الأزرار بشكل أكبر */
+  height: 50px; /* تحديد ارتفاع الأزرار بشكل أكبر */
+  top: 50%; /* لتوسيط الأزرار رأسياً */
+  transform: translateY(-50%); /* لضبط وضع الأزرار بشكل دقيق */
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+  background-size: 25px 25px; /* تغيير حجم الأيقونة الداخلية */
+  background-position: center; /* توسيط الأيقونة داخل الدائرة */
+}
+
+.carousel-control-prev:hover, .carousel-control-next:hover {
+  background-color: #cdab35; /* تغيير اللون عند التمرير على الأيقونة */
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+  background-color: #cdab35; /* لون الخلفية */
+  border-radius: 50%; /* شكل دائري */
+  border: 2px solid #fff; /* إضافة حد أبيض حول الأيقونة */
+}
+
+/* نتأكد أن الصفوف لا تلتفّ، وللحفاظ على عرض متساوٍ */
+#versionsCarousel .carousel-item .row {
+  flex-wrap: nowrap;
+}
+
+/* نجبر الأعمدة على الحفاظ على حجمها */
+#versionsCarousel .carousel-item .col-4 {
+  flex: 0 0 auto;
+}
+
+  #releases-title {
+    margin-top: 0.5rem; /* اختَر القيمة التي تراها مناسبة */
+  }
+
+
+
+.accordion-body ul li {
+  margin-bottom: 0.75rem;
+}
+
+    /* عمل freeze pane */
+#layout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;     /* يغطي كامل ارتفاع النافذة */
+  overflow: auto;    /* يسمح بالتمرير داخل الحاوية */
+}
+  /* CSS لشريط الإعلانات العمودي */
+    .announcements-vertical {
+      position: fixed;
+      top: 18%;
+      right: 0;
+      width: 290px;
+      height: 100vh;
+      overflow: hidden;
+      background: #ffc107;
+      background-color: #ffc107;
+      color: #000;
+      z-index: 2000;            /* تأكيد أنّه أعلى من كل العناصر */
+      box-shadow: -2px 2px 6px rgba(0,0,0,0.3);
+      padding-top: 1rem;
+    }
+    .announcements-vertical-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      animation: scroll-up 12s linear infinite;
+    }
+    .announcements-vertical-list li {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+    }
+    .announcements-vertical-list li a {
+      color: #000;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: block;
+    }
+    .announcements-vertical-list li a:hover {
+      text-decoration: underline;
+    }
+    .announcements-vertical:hover .announcements-vertical-list {
+      animation-play-state: paused;
+    }
+    @keyframes scroll-up {
+      0%   { transform: translateY(0%); }
+      100% { transform: translateY(-50%); }
+    }
+
+ #feedbackToggle {
+  position: fixed;
+  top: 52%;
+  left: -100px;               /* تبدأ مخفية جزئياً من اليسار */
+  transform: translateY(-50%);
+  z-index: 1050;
+  background-color: #cdab35;
+  color: #000;
+  border: 2px solid var(--primary-color);
+  /* عكس الزوايا: خليها مدورة على الجانب الأيسر الخارجي */
+  border-radius: 0 8px 8px 0;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: left 0.3s ease-in-out;  /* ننتقل بـ left بدل right */
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#feedbackToggle:hover {
+  left: 0;   /* تظهر عند الوصول للصفر من اليسار */
+  background: #fff9db;
+}
+
+html[dir="ltr"] #feedbackToggle:hover {
+  left: 0;   /* تظهر عند الوصول للصفر من اليسار */
+  background: #fff9db;
+}
+
+html[dir="ltr"] #feedbackToggle {
+  position: fixed;
+  top: 52%;
+  left: -127px;               /* تبدأ مخفية جزئياً من اليسار */
+  transform: translateY(-50%);
+  z-index: 1050;
+  background-color: #cdab35;
+  color: #000;
+  border: 2px solid var(--primary-color);
+  /* عكس الزوايا: خليها مدورة على الجانب الأيسر الخارجي */
+  border-radius: 0 8px 8px 0;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: left 0.3s ease-in-out;  /* ننتقل بـ left بدل right */
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+  /* Dark Mode Overrides */
+  html.dark-mode .logo-bar {
+    background-color: #1e1e1e !important;
+    border-bottom: 1px solid #444;
+  }
+  html.dark-mode .logo-bar span {
+    color: #f0f0f0 !important;
+  }
+  html.dark-mode .menu-bar {
+    background-color: #1e1e1e !important;
+    border-bottom: 2px solid #444;
+  }
+
+  html, body, .logo-bar, .menu-bar, .navbar, .nav-link, .top-icons a, footer, .card {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+html.dark-mode #feedbackToggle{
+  background: #1e1e1e;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+ /* CSS لشريط الإعلانات العمودي */
+
+ /* Header داخل شريط الإعلانات */
+.announcements-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(205,171,53,1);
+  color: #fff;
+  text-align: center;
+  padding: 0.5rem 0;
+  font-weight: bold;
+  z-index: 1050;
+}
+
+   /* Announcements Vertical */
+  .announcements-vertical {
+    position: fixed;
+    top: 165px;
+    right: 0;
+    width: 250px;
+    height: calc(100vh - 50px);
+    font-size: 20px;
+    background: rgba(205,171,53,0.9);
+    overflow: hidden;
+    z-index: 1040;
+     padding-top: 2.5rem
+  }
+  .announcements-vertical-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    animation: scroll-up 15s linear infinite;
+  }
+  .announcements-vertical-list li {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+  }
+  .announcements-vertical-list li a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .announcements-vertical-list li a:hover {
+    text-decoration: underline;
+  }
+  .announcements-vertical:hover .announcements-vertical-list {
+    animation-play-state: paused;
+  }
+  @keyframes scroll-up {
+    0% { transform: translateY(150%); }
+    100% { transform: translateY(-100%); }
+  }
+
+.announcement-detail a {
+  color: #cdab35;
+  text-decoration: underline;
+  }
+.announcement-detail a:hover {
+  color: #d2b97f;
+}
+textarea {
+  white-space: pre-wrap;
+}
+   /* Fixed Header */
+  header.fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Content Wrapper to avoid overlap */
+  .content-wrapper {
+    margin-top: 180px; /* اضبط حسب ارتفاع الهيدر الفعلي */
+  }
+
+
+/* ---------- معرض الصور Masonry ---------- */
+
+/* الحاوية العامة */
+.grid {
+  /* المسافة الأفقية بين الأعمدة */
+  column-gap: 1rem;
+  /* عدد الأعمدة على الشاشات الكبيرة */
+  column-count: 4;
+  /* عند الشاشات المتوسطة */
+}
+@media (max-width: 992px) {
+  .grid {
+    column-count: 3;
+  }
+}
+@media (max-width: 768px) {
+  .grid {
+    column-count: 2;
+  }
+}
+@media (max-width: 576px) {
+  .grid {
+    column-count: 1;
+  }
+}
+
+/* كل عنصر في الشبكة */
+.grid-item {
+  /* اعمل مسافة عمودية بين العناصر */
+  margin-bottom: 1rem;
+  /* اجعل العنصر يُحتوى داخل عمودٍ واحد (لا يكسر العمود) */
+  break-inside: avoid;
+  /* إضافة تأثير ظل رقيق */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  transition: transform 0.3s ease;
+}
+.grid-item:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* تنسيق الصورة داخل العنصر */
+.grid-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* تعليق الصورة */
+.image-caption {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+/*مؤثرات بصرية إضافية على الروابط*/
+/* 1. الأساس (لون ونمط الخط) */
+.ann-link {
+  position: relative;          /* لتحديد موضع ::after */
+  color: #cdab35;              /* لون رئيسي للرابط */
+  text-decoration: none;       /* نزيل التسطير الافتراضي */
+  font-weight: 500;
+  transition: color 0.3s ease; /* انتقال سلس لتغيير اللون */
+}
+
+/* 2. إضافة خط سفلي وهمي يبدأ بعرض 0 */
+.ann-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;                 /* سمك الخط */
+  background-color: #cdab35;   /* لون الخط السفلي */
+  transition: width 0.3s ease;
+}
+
+/* 3. عند التمرير (hover)، يتغير لون الرابط ويتمدّد الخط السفلي */
+.ann-link:hover {
+  color: #a5832f;              /* لون أغمق قليلاً عند التمرير */
+}
+
+.ann-link:hover::after {
+  width: 100%;                 /* نملأ العرض كاملا */
+}
+
+/* 4. يمكن إضافة تأثير تكبير خفيف (اختياري) */
+.ann-link:hover {
+  transform: scale(1.02);
+}
+
+/* 5. عند ترك الماوس، يعود إلى الوضع الطبيعي */
+.ann-link {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+#topCarousel .custom-carousel-arrow{
+  padding: 6px 10px;
+  background: rgba(0,0,0,.35);
+  border-radius: 9999px;
+  font-size: 1.4rem;
+}
+
+
+/* متغيّرات ألوان موحّدة (اختياري) */
+:root{
+  --pn-primary: #ffc107;
+  --pn-text-on-primary: #cdab35;
+}
+
+
+/* 2) لون عنوان اللوحة داخل الـ offcanvas */
+#feedbackPanel .offcanvas-title{
+  color: var(--pn-primary);
+  font-weight: 800;
+}
+
+/* (اختياري) لو أردت شريط عنوان اللوحة نفسه أصفر */
+#feedbackPanel .offcanvas-header{
+  background: #fff9db;
+  border-bottom: 1px solid #ffe08a;
+}
+
+#siteSearchModal .modal-title { color: #ffc107; font-weight: 800; }
+
+.page-title { margin-top: 1.25rem; }
+
+<style>
+  .en-disclaimer__header{
+    background: linear-gradient(135deg, #cdab35, #8f7a2a);
+  }
+  .en-disclaimer .modal-body{
+    padding-top: 1rem;
+  }
+  .en-disclaimer__list{
+    padding-inline-start: 1.2rem;
+    line-height: 1.7;
+  }
+  /* زر English سيبدو أجمل عند المرور */
+  a.lang-en-link:hover{text-decoration: none;}
+</style>
+
+/* ====== متغيرات الوضع الفاتح (محدودة داخل .theme-root) ====== */
+.theme-root {
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --text: #111213;
+  --muted: #666;
+  --border: #e6e6e6;
+
+  --primary: #cdab35;   /* ذهبي PNCECS */
+  --link: #0d6efd;
+
+  --chip-bg: #ffffff;
+  --chip-border: #e0e0e0;
+  --chip-text: #333;
+  --chip-active-bg: var(--primary);
+  --chip-active-text: #fff;
+}
+
+/* ====== الوضع الداكن (داخل .theme-root فقط) ====== */
+html[data-theme="dark"],
+html[data-theme="auto"][data-theme-resolved="dark"] {
+  --primary: #d6b35a;      /* ذهبي أفتح */
+}
+
+
+.theme-root[data-theme="dark"],
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] {
+  --bg: #0f1115;
+  --surface: #141821;
+  --text: #e6e6e6;
+  --muted: #a8a8a8;
+  --border: #2a2f3a;
+
+  --primary: #d6b35a;
+  --link: #7bb2ff;
+
+  --chip-bg: #1a1f2a;
+  --chip-border: #2a2f3a;
+  --chip-text: #dde1e7;
+  --chip-active-bg: #3a7de2;
+  --chip-active-text: #fff;
+}
+
+/* ====== تطبيق المتغيرات على عناصر داخل .theme-root فقط ====== */
+.theme-root { background: var(--bg); color: var(--text); }
+
+.theme-root .card,
+.theme-root .modal-content,
+.theme-root .dropdown-menu,
+.theme-root .list-group-item {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.theme-root .navbar,
+.theme-root .offcanvas,
+.theme-root .form-control,
+.theme-root .form-select,
+.theme-root .btn {
+  border-color: var(--border);
+}
+
+.theme-root a       { color: var(--link); }
+.theme-root .btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Chips (المعرض) */
+.theme-root .chip {
+  display:inline-block; padding:.35rem .75rem; border-radius:999px;
+  border:1px solid var(--chip-border); background:var(--chip-bg);
+  color:var(--chip-text); text-decoration:none; font-size:.9rem;
+}
+.theme-root .chip:hover { filter:brightness(0.96); }
+.theme-root .chip.active {
+  background:var(--chip-active-bg); color:var(--chip-active-text);
+  border-color:var(--chip-active-bg);
+}
+
+/* Lightbox2 داخل الثيم */
+.theme-root .lb-outerContainer { background:#000 !important; }
+.theme-root .lb-data, .theme-root .lb-data .lb-number, .theme-root .lb-data .lb-caption { color:#d8d8d8 !important; }
+
+
+.content-wrapper::before {
+  content:"";
+  position:absolute;
+  right:1rem; bottom:1rem;      /* RTL-friendly */
+  width:320px; height: 80px;    /* يقاس تلقائيًا إن كانت الصورة متناسبة */
+  background: url("{{ url_for('static', filename='images/tatreez.png') }}") no-repeat center/contain;
+  opacity:.08;
+  pointer-events:none;
+}
+
+html[dir="ltr"] .theme-root::before {
+  background-position: 2rem calc(100% - 2rem);
+}
+
+background-size: min(38vw, 420px) auto;
+
+
+/* === Tatreez Watermark (auto-injected) === */
+/* Bottom-right watermark on content area */
+.theme-root .content-wrapper { position: relative; }
+.theme-root .content-wrapper::before {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: min(38vw, 420px);
+  height: 100px;
+  background: url("/static/images/tatreez.png") no-repeat center / contain;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+html[dir="ltr"] .theme-root .content-wrapper::before {
+  left: 1rem;
+  right: auto;
+}
+
+.tatreez-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 46px;
+  background: url("/static/images/tatreez.png") repeat-x center / auto 46px;
+  opacity: 0.10;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.theme-root[data-theme="dark"] .content-wrapper::before,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .content-wrapper::before {
+  opacity: 0.10;
+  filter: saturate(1.1) brightness(1.05);
+}
+.theme-root[data-theme="dark"] .tatreez-top::before,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .tatreez-top::before {
+  opacity: 0.09;
+  filter: brightness(1.05) contrast(0.95);
+}
+
+.theme-root .content-wrapper { position: relative; z-index: 1; }
+
+/* ووتِرمارك سفلي ثابت على الشاشة */
+.theme-root::after{
+  content:"";
+  position: fixed;          /* ثابت مع التمرير */
+  right: 1rem;
+  bottom: 1rem;
+  width: min(38vw, 420px);
+  height: 100px;
+  background: url("/static/images/tatreez.png") no-repeat center / contain;
+  opacity: 0.10;            /* جرّب 0.06–0.12 حسب الذوق */
+  pointer-events: none;
+  z-index: 0;               /* تحت المحتوى وفوق الخلفية */
+}
+
+/* في الواجهة الإنجليزية ضعه يساراً */
+html[dir="ltr"] .theme-root::after{
+  left: 1rem;
+  right: auto;
+}
+
+/* زنار علوي داخل شريط القوائم (واضح دائماً) */
+.theme-root .menu-bar{ position: relative; z-index: 1; }
+.theme-root .menu-bar::before{
+  content:"";
+  position: absolute;
+  inset: 0 auto auto 0;     /* top:0; left:0 */
+  width: 100%;
+  height: 46px;             /* عدّل الارتفاع حسب الصورة */
+  background: url("/static/images/tatreez.png") repeat-x center / auto 46px;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ضبط خفيف للوضع الداكن */
+.theme-root[data-theme="dark"]::after,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"]::after{
+  opacity: 0.12;
+  filter: saturate(1.05) brightness(1.05);
+}
+.theme-root[data-theme="dark"] .menu-bar::before,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .menu-bar::before{
+  opacity: 0.10;
+  filter: brightness(1.05) contrast(0.95);
+}
+
+/* === Fix: Search icon visibility (light & dark mode) === */
+
+/* اللون الافتراضي (الوضع الفاتح) */
+.theme-root .bi-search,
+.theme-root a[title="بحث"] i,
+.theme-root a[aria-label="بحث"] i {
+  color: #333 !important; /* رمادي غامق واضح على خلفية فاتحة */
+  transition: color .2s ease;
+}
+
+/* عند التحويم */
+.theme-root a:hover .bi-search {
+  color: var(--primary) !important;
+}
+
+/* الوضع الداكن */
+.theme-root[data-theme="dark"] .bi-search,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .bi-search,
+.theme-root[data-theme="dark"] a[title="بحث"] i,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] a[title="بحث"] i {
+  color: #f1f1f1 !important; /* أبيض واضح على الخلفية الداكنة */
+}
+
+
+/* الطبقة الشفافة فوق الصور */
+.tatreez-overlay {
+  position: absolute;
+  inset: 0; /* يغطي كل مساحة البانر */
+  background: url("/static/images/tatreez.png") repeat center center / 300px auto;
+  opacity: 0.07; /* خفيف جدًا مثل ووترمارك */
+  pointer-events: none;
+  z-index: 2; /* فوق الصور ولكن تحت النصوص */
+  mix-blend-mode: multiply; /* يعطي تأثير مطبوع على الصور */
+}
+
+/* الوضع الليلي - تفتيح طفيف */
+.theme-root[data-theme="dark"] .tatreez-overlay,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .tatreez-overlay {
+  opacity: 0.10;
+  filter: brightness(1.1);
+}
+

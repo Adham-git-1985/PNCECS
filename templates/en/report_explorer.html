@@ -1,0 +1,202 @@
+{% extends "/en/layout.html" %}
+{% block title %}Accomplishments Reoprts - (محلي بالكامل){% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="row g-3">
+    <aside class="col-lg-3">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h2 class="h5 mb-3" style="color:#cdab35;">📁 Accomplishments Reoprts</h2>
+          <input id="search" type="search" class="form-control mb-2" placeholder="Search for Report...">
+          <div class="list-group small" id="reportList" style="max-height:60vh; overflow:auto; border:1px solid #eee; border-radius:8px;">
+            {% for rep in reports %}
+              <button type="button"
+                class="list-group-item list-group-item-action d-flex align-items-start gap-2 {% if loop.first %}active{% endif %}"
+                data-pdf="{{ url_for('static', filename=rep.file_path) }}"
+                data-title="{{ rep.title|e }}">
+                <div class="flex-fill text-start">
+                  <div class="fw-bold">{{ rep.title }}</div>
+                </div>
+                <span class="ms-auto">↗</span>
+              </button>
+            {% else %}
+              <div class="p-3 text-center text-muted">There No Reports Yet</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="col-lg-9">
+      {% set initial = reports[0] if reports else None %}
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h1 id="viewerTitle" class="h5 mb-0">{{ initial.title if initial else '—' }}</h1>
+        <div class="btn-group">
+          <a id="btnDownload" class="btn btn-outline-secondary" href="{{ url_for('static', filename=initial.file_path) if initial else '#' }}" download>Download</a>
+          <a id="btnOpenNew" class="btn btn-outline-secondary" target="_blank" rel="noopener noreferrer" href="{{ url_for('static', filename=initial.file_path) if initial else '#' }}">فتح في تبويب جديد</a>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div id="pdfContainer">
+            <div id="pdfViewer" class="text-center">
+              <canvas id="pdfCanvas" style="max-width:100%; border:1px solid #cdab35; border-radius:8px;"></canvas>
+            </div>
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mt-3" id="toolbar">
+              <button id="prevPage" class="btn btn-sm btn-outline-secondary">Previous</button>
+              <span class="small">Page <span id="pageNum">1</span> / <span id="pageCount">?</span></span>
+              <button id="nextPage" class="btn btn-sm btn-outline-secondary">Next</button>
+              <div class="d-flex align-items-center ms-3">
+                <label for="zoom" class="me-2 small mb-0">Magnifier</label>
+                <input id="zoom" type="range" min="50" max="200" value="110" class="form-range" style="width:180px">
+                <span class="small ms-2"><span id="zoomLabel">110</span>%</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="fallbackBox" class="d-none">
+            <div class="ratio ratio-16x9 border" style="border-color:#cdab35; border-radius:8px;">
+              <object id="fallbackObj" data="#" type="application/pdf" width="100%" height="100%">
+                <embed id="fallbackEmbed" src="#" type="application/pdf" />
+                <p class="p-3">The file cannot be displayed here. <a id="fallbackLink" href="#" target="_blank" rel="noopener">Open in a new tab</a>.</p>
+              </object>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- حمّل نسخة محلية من pdf.min.js وضعها في المسار التالي -->
+<script src="{{ url_for('static', filename='vendor/pdfjs/pdf.min.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('pdfCanvas');
+  const ctx = canvas.getContext('2d');
+  const pageNumLabel = document.getElementById('pageNum');
+  const pageCountLabel = document.getElementById('pageCount');
+  const prevBtn = document.getElementById('prevPage');
+  const nextBtn = document.getElementById('nextPage');
+  const zoom = document.getElementById('zoom');
+  const zoomLabel = document.getElementById('zoomLabel');
+  const reportList = document.getElementById('reportList');
+  const viewerTitle = document.getElementById('viewerTitle');
+  const btnDownload = document.getElementById('btnDownload');
+  const btnOpenNew = document.getElementById('btnOpenNew');
+
+  const pdfContainer = document.getElementById('pdfContainer');
+  const fallbackBox = document.getElementById('fallbackBox');
+  const fbObj = document.getElementById('fallbackObj');
+  const fbEmbed = document.getElementById('fallbackEmbed');
+  const fbLink = document.getElementById('fallbackLink');
+
+  let pdfDoc = null, pageNum = 1, rendering = false, pending = null, currentUrl = null;
+
+  function useFallback(url){
+    // إخفاء عارض PDF.js تمامًا
+    pdfContainer.classList.add('d-none');
+    // إظهار العارض البديل
+    fallbackBox.classList.remove('d-none');
+    fbObj.data = url;
+    fbEmbed.src = url;
+    fbLink.href = url;
+  }
+
+  function renderPage(num) {
+    rendering = true;
+    pdfDoc.getPage(num).then(page => {
+      const scale = parseInt(zoom.value, 10) / 100;
+      const viewport = page.getViewport({ scale: scale * 1.15 });
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      page.render({ canvasContext: ctx, viewport }).promise.then(() => {
+        rendering = false;
+        if (pending !== null) {
+          renderPage(pending);
+          pending = null;
+        }
+      });
+
+      pageNumLabel.textContent = num;
+      zoomLabel.textContent = zoom.value;
+    }).catch(err => {
+      // لو فشلنا أثناء الرسم، نتحول للبديل
+      console.error('Render error:', err);
+      useFallback(currentUrl);
+    });
+  }
+
+  function queueRender(num) {
+    if (rendering) pending = num;
+    else renderPage(num);
+  }
+
+  function onPrev() {
+    if (!pdfDoc || pageNum <= 1) return;
+    pageNum--;
+    queueRender(pageNum);
+  }
+
+  function onNext() {
+    if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+    pageNum++;
+    queueRender(pageNum);
+  }
+
+  function loadPdf(url, title) {
+    currentUrl = url;
+    viewerTitle.textContent = title || '—';
+    btnDownload.href = url;
+    btnOpenNew.href = url;
+
+    if (!url || url === '#') { return; }
+
+    // إن لم تُحمَّل مكتبة pdf.js محليًا، نتحول فورًا للبديل بدون رسائل مزعجة
+    if (!window.pdfjsLib) {
+      console.warn('pdf.min.js (local) not found — using fallback viewer');
+      useFallback(url);
+      return;
+    }
+
+    // اضبط العامل المحلي
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "{{ url_for('static', filename='vendor/pdfjs/pdf.worker.min.js') }}";
+
+    // ابدأ تحميل المستند
+    pdfjsLib.getDocument(url).promise.then(doc => {
+      pdfDoc = doc;
+      pageNum = 1;
+      pageCountLabel.textContent = pdfDoc.numPages || '?';
+      // أظهر عارض PDF.js وأخفِ البديل
+      fallbackBox.classList.add('d-none');
+      pdfContainer.classList.remove('d-none');
+      renderPage(pageNum);
+    }).catch(err => {
+      console.warn('Load error -> using fallback viewer:', err);
+      useFallback(url);
+    });
+  }
+
+  reportList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.list-group-item');
+    if (!btn) return;
+    reportList.querySelectorAll('.list-group-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadPdf(btn.dataset.pdf, btn.dataset.title);
+  });
+
+  prevBtn?.addEventListener('click', onPrev);
+  nextBtn?.addEventListener('click', onNext);
+  zoom?.addEventListener('input', () => queueRender(pageNum));
+
+  // التحميل الأولي
+  const first = reportList.querySelector('.list-group-item.active') || reportList.querySelector('.list-group-item');
+  if (first) first.click();
+});
+</script>
+{% endblock %}

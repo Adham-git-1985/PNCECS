@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+{% block title %}{{ 'News - PNCECS' if (g.lang=='en') else 'الأخبار - اللجنة الوطنية' }}{% endblock %}
+
+{% block content %}
+{% set lang = g.lang or 'ar' %}
+<div class="container my-5">
+    <h2 class="mb-4 text-primary text-center">📰 {{ 'News' if lang=='en' else 'الأخبار' }}</h2>
+
+    <form method="GET" class="mb-4">
+        <div class="row g-2">
+            <div class="col-sm-9">
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control"
+                    placeholder="{{ 'Search news…' if lang=='en' else '🔍 ابحث في الأخبار...' }}"
+                    value="{{ query }}"
+                >
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-primary w-100">{{ 'Search' if lang=='en' else 'بحث' }}</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for item in news_list %}
+        <div class="col">
+            <div class="card h-100">
+                {# ملاحظة: في بعض المشاريع يرتبط الخبر بصور عبر علاقة item.gallery.
+                   إن لم تكن العلاقة موجودة لديك، فالسطر التالي سيتجاهل ذلك بأمان. #}
+                {% set image = (item.gallery[0] if (item.gallery is defined and item.gallery) else None) %}
+                {% if image %}
+                <img
+                    src="{{ url_for('static', filename='images/gallery/' ~ image.filename) }}"
+                    class="card-img-top"
+                    alt="{{ image.title or ('Image' if lang=='en' else 'صورة') }}"
+                >
+                {% endif %}
+                <div class="card-body">
+                    {# العنوان والمحتوى: app.py يقوم بتمرير النسخة الإنجليزية مؤقتًا عند lang=='en',
+                       لذلك يكفي استخدام item.title/item.content هنا. #}
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.content[:180] }}...</p>
+                    <a
+                        href="{{ url_for('news_detail', news_id=item.id) }}"
+                        class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer"
+                    >
+                        {{ 'Read more' if lang=='en' else 'قراءة الخبر' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if pages > 1 %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center flex-wrap">
+            {# زر الصفحة السابقة #}
+            <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                <a
+                    class="page-link"
+                    href="?page={{ page-1 }}{% if query %}&q={{ query }}{% endif %}"
+                    aria-label="{{ 'Previous' if lang=='en' else 'السابق' }}"
+                >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            {# عرض الأرقام مع نقاط وسطية #}
+            {% if pages <= 7 %}
+                {% for p in range(1, pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a
+                        class="page-link"
+                        href="?page={{ p }}{% if query %}&q={{ query }}{% endif %}"
+                    >
+                        {{ p }}
+                    </a>
+                </li>
+                {% endfor %}
+            {% else %}
+                {% for p in range(1, pages + 1) %}
+                    {% if p <= 5 or p > pages - 2 %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a
+                                class="page-link"
+                                href="?page={{ p }}{% if query %}&q={{ query }}{% endif %}"
+                            >
+                                {{ p }}
+                            </a>
+                        </li>
+                    {% elif p == 6 %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&hellip;</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {# زر الصفحة التالية #}
+            <li class="page-item {% if page >= pages %}disabled{% endif %}">
+                <a
+                    class="page-link"
+                    href="?page={{ page+1 }}{% if query %}&q={{ query }}{% endif %}"
+                    aria-label="{{ 'Next' if lang=='en' else 'التالي' }}"
+                >
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

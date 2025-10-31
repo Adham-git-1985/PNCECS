@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="pt-5"></div>
+  <!-- رسائل الفلاش -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category=='success' else 'danger' }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+<h2 class="mt-5 mb-3 text-center">إدارة الإعلانات</h2>
+<a href="{{ url_for('add_announcement') }}" class="btn btn-primary mb-3">إضافة إعلان جديد</a>
+<table class="table">
+  <thead><tr><th>العنوان</th><th>عرض</th><th>تاريخ</th><th>إجراءات</th></tr></thead>
+  <tbody>
+    {% for ann in announcements %}
+    <tr>
+      <td>{{ ann.title }}</td>
+      <td><a href="{{ url_for('announcement_detail', id=ann.id) }}" class="btn btn-sm btn-warning">عرض</a></td>
+      <td>{{ ann.created_at.strftime('%Y-%m-%d') }}</td>
+      <td>
+        <a href="{{ url_for('edit_announcement', id=ann.id) }}" class="btn btn-sm btn-warning">تعديل</a>
+        <form method="post" action="{{ url_for('delete_announcement', id=ann.id) }}" style="display:inline;" onsubmit="return confirm('هل تأكد من الحذف؟');">
+          <button class="btn btn-sm btn-danger">حذف</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

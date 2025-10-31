@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}{{ pick('نموذج المشاريع', 'Projects Form') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <h2 class="mb-4 text-primary text-center">
+    {{ pick('نموذج المشاريع', 'Projects Form') }}
+  </h2>
+
+  <div class="accordion" id="projectFormAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading6">
+        <button class="accordion-button collapsed" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapse6"
+                aria-expanded="false" aria-controls="collapse6">
+          {{ pick('نموذج المشاريع والبرامج', 'Programs & Projects Form') }}
+        </button>
+      </h2>
+
+      <div id="collapse6" class="accordion-collapse collapse"
+           data-bs-parent="#projectFormAccordion">
+        <div class="accordion-body">
+
+          <p>
+            {{ pick(
+              'تقوم دائرة المشاريع في اللجنة الوطنية الفلسطينية للتربية والثقافة والعلوم بتحديد أولويات المشاريع وتنفيذها وتوزيعها على المنظمات الأهلية، بما يتوافق مع أهداف اللجنة الوطنية وأهداف المنظمات والجهات الدولية الممولة (اليونسكو، الإيسيسكو، الألكسو وغيرها).',
+              'The Projects Department at the Palestinian National Commission for Education, Culture and Science defines project priorities, implements them, and allocates them to NGOs, in line with the Commission’s objectives and those of international funders (UNESCO, ICESCO, ALECSO, etc.).'
+            ) }}
+          </p>
+
+          <p>
+            {{ pick(
+              'تولي اللجنة الوطنية اهتمامًا بالمشاريع التنموية التي تمكّن المرأة الفلسطينية، مع مراعاة التنوع الجغرافي لتشمل مختلف المحافظات، وإعطاء الأولوية للمشاريع المتميزة في الريف والمناطق النائية والمتأثرة من جدار الفصل. كما تدعم الأنشطة الأكاديمية والثقافية والتربوية والعلمية، ومشاريع الحفاظ على التراث الفلسطيني وتطويره.',
+              'Priority is given to development projects that empower Palestinian women, ensuring geographic inclusion across governorates and emphasizing outstanding initiatives in rural, remote, and affected areas. The Commission also supports academic, cultural, educational, and scientific activities, as well as projects that preserve and advance Palestinian heritage.'
+            ) }}
+          </p>
+
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <a href="{{ url_for('static', filename='forms/SUBMISSION-FORM-arabic.docx') }}"
+                 class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener">
+                {{ pick('نموذج طلب الحصول على تمويل (عربي)', 'Funding Submission Form (Arabic)') }}
+              </a>
+            </li>
+            <li>
+              <a href="{{ url_for('static', filename='forms/SUBMISSION-FORM-eng.docx') }}"
+                 class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener">
+                {{ pick('نموذج التمويل (إنجليزي)', 'Funding Submission Form (English)') }}
+              </a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

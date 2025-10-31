@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block title %}{{ t('achievement_reports') }} - {{ t('site_name') }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">{{ t('achievement_reports') }}</h1>
+    <div class="btn-group">
+      <a class="btn btn-outline-secondary" href="{{ pdf_url }}" download>
+        {{ pick('تحميل PDF', 'Download PDF') }}
+      </a>
+      <a class="btn btn-outline-secondary" target="_blank" href="{{ pdf_url }}">
+        {{ pick('فتح في تبويب جديد', 'Open in new tab') }}
+      </a>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <div id="pdfViewer" class="text-center">
+        <canvas id="pdfCanvas" style="max-width:100%; border:1px solid #cdab35; border-radius:8px;"></canvas>
+      </div>
+
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mt-3">
+        <button id="prevPage" class="btn btn-sm btn-outline-secondary">{{ t('prev') }}</button>
+        <span class="small">
+          {{ pick('الصفحة', 'Page') }} <span id="pageNum">1</span> / <span id="pageCount">?</span>
+        </span>
+        <button id="nextPage" class="btn btn-sm btn-outline-secondary">{{ t('next') }}</button>
+
+        <div class="d-flex align-items-center ms-3">
+          <label for="zoom" class="me-2 small mb-0">{{ pick('التكبير', 'Zoom') }}</label>
+          <input id="zoom" type="range" min="50" max="200" value="100" class="form-range" style="width:180px">
+          <span class="small ms-2"><span id="zoomLabel">100</span>%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <noscript class="text-center d-block mt-3">
+    <a href="{{ pdf_url }}" class="btn btn-primary">
+      {{ pick('عرض/تحميل الملف', 'View/Download file') }}
+    </a>
+  </noscript>
+</div>
+
+<!-- PDF.js (self-contained in this page so you don't need layout changes) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.10.177/pdf.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const url = "{{ pdf_url }}";
+    const canvas = document.getElementById('pdfCanvas');
+    const ctx = canvas.getContext('2d');
+    const pageNumLabel = document.getElementById('pageNum');
+    const pageCountLabel = document.getElementById('pageCount');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const zoom = document.getElementById('zoom');
+    const zoomLabel = document.getElementById('zoomLabel');
+
+    // نصوص ثنائية اللغة داخل الجافاسكربت
+    const STR_FAIL = "{{ pick('تعذر تحميل الملف', 'Failed to load the file') }}";
+    const STR_DOWNLOAD = "{{ pick('اضغط هنا للتحميل', 'Click here to download') }}";
+
+    let pdfDoc = null, pageNum = 1, rendering = false, pending = null;
+
+    function renderPage(num) {
+      rendering = true;
+      pdfDoc.getPage(num).then(page => {
+        const scale = parseInt(zoom.value, 10) / 100;
+        const viewport = page.getViewport({ scale: scale * 1.2 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        page.render({ canvasContext: ctx, viewport }).promise.then(() => {
+          rendering = false;
+          if (pending !== null) {
+            renderPage(pending);
+            pending = null;
+          }
+        });
+
+        pageNumLabel.textContent = num;
+        zoomLabel.textContent = zoom.value;
+      });
+    }
+
+    function queueRender(num) {
+      if (rendering) pending = num;
+      else renderPage(num);
+    }
+
+    function onPrev() {
+      if (pageNum <= 1) return;
+      pageNum--;
+      queueRender(pageNum);
+    }
+
+    function onNext() {
+      if (pageNum >= pdfDoc.numPages) return;
+      pageNum++;
+      queueRender(pageNum);
+    }
+
+    pdfjsLib.getDocument(url).promise.then(doc => {
+      pdfDoc = doc;
+      pageCountLabel.textContent = pdfDoc.numPages;
+      renderPage(pageNum);
+    }).catch(err => {
+      document.getElementById('pdfViewer').innerHTML =
+        '<div class="alert alert-danger">' + STR_FAIL + ' <a href="' + url + '">' + STR_DOWNLOAD + '</a></div>';
+      console.error(err);
+    });
+
+    prevBtn.addEventListener('click', onPrev);
+    nextBtn.addEventListener('click', onNext);
+    zoom.addEventListener('input', () => queueRender(pageNum));
+  });
+</script>
+{% endblock %}
+

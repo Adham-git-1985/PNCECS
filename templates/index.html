@@ -37,9 +37,8 @@
         .top-image-badge { position: absolute; top: 15px; left: 15px; background-color: #cdab35; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.9rem; z-index: 10; }
 
                 /* تكبير السلايدر ليملأ العرض أكثر */
-        #topCarousel {
-          width: 137%;
-        }
+        #topCarousel { width: 100%; }
+
         .carousel-item img {
           width: 100%;
           height: auto;
@@ -173,7 +172,8 @@
 <h2 class="mb-4"
     style="color: #cdab35; text-align: center; border: 2px solid #cdab35;
            padding: 10px 20px; border-radius: 8px;
-           margin-right: 13px;">  <!-- أضفنا الإزاحة هنا -->
+           margin-right: 13px;">
+  <!-- أضفنا الإزاحة هنا -->
   {{ pick('الإصدارات', 'Publications') }}
 </h2>
 

@@ -2050,9 +2050,13 @@ def admin_fill_en_once():
 def make_shell_context():
     return dict(db=db, Category=Category, Gallery=Gallery)
 
-if __name__ == '__main__':
-    app.run(host="127.0.0.1", port=8000, debug=True, use_reloader=False)
+#if __name__ == '__main__':
+ #   app.run(debug=False, host='0.0.0.0', port=8000)
   #  app.run(debug=True)
+
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8000)
 
 
 #app.config.update(

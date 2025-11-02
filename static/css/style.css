@@ -1020,4 +1020,26 @@ font-size: 1rem !important;
   }
 }
 
+/* ================== إخفاء عمود الإعلانات بالكامل في الشاشات الصغيرة ================== */
+@media screen and (max-width: 992px) {
+  .announcements-vertical,
+  .announcements-vertical-list,
+  .announcements-header {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* للتأكد أن المحتوى لا يترك مساحة فارغة */
+  .content-wrapper {
+    padding-inline-end: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

@@ -926,21 +926,4 @@ html[dir="ltr"] .theme-root::after{
 }
 
 
-/* الطبقة الشفافة فوق الصور */
-.tatreez-overlay {
-  position: absolute;
-  inset: 0; /* يغطي كل مساحة البانر */
-  background: url("/static/images/tatreez.png") repeat center center / 300px auto;
-  opacity: 0.07; /* خفيف جدًا مثل ووترمارك */
-  pointer-events: none;
-  z-index: 2; /* فوق الصور ولكن تحت النصوص */
-  mix-blend-mode: multiply; /* يعطي تأثير مطبوع على الصور */
-}
-
-/* الوضع الليلي - تفتيح طفيف */
-.theme-root[data-theme="dark"] .tatreez-overlay,
-.theme-root[data-theme="auto"][data-theme-resolved="dark"] .tatreez-overlay {
-  opacity: 0.10;
-  filter: brightness(1.1);
-}
 

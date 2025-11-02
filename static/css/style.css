@@ -927,3 +927,72 @@ html[dir="ltr"] .theme-root::after{
 
 
 
+/* ====================== تحسين التجاوب على الموبايل PNCECS ====================== */
+
+
+/* 1️⃣ ضبط السلايدر ليملأ الشاشة بالكامل */
+@media (max-width: 992px) {
+#topCarousel {
+width: 100% !important;
+}
+.carousel-item img {
+max-height: 360px !important;
+object-fit: cover;
+}
+}
+
+
+/* 2️⃣ إخفاء أو تحويل شريط الإعلانات الجانبي أسفل المحتوى في الموبايل */
+@media (max-width: 992px) {
+.announcements-vertical {
+position: relative !important;
+width: 100% !important;
+height: auto !important;
+top: auto !important;
+right: auto !important;
+background: rgba(205,171,53,0.9);
+margin-top: 1rem;
+box-shadow: none;
+}
+.announcements-vertical-list {
+animation: none !important;
+max-height: none;
+}
+.announcements-vertical-list li {
+text-align: center;
+border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+}
+
+
+/* 3️⃣ تصغير حجم العناوين وتوسيطها في الموبايل */
+@media (max-width: 576px) {
+h2, h3 {
+font-size: 1.3rem !important;
+text-align: center !important;
+margin-right: 0 !important;
+}
+}
+
+
+/* 4️⃣ تأكيد أن الصور داخل الكروت لا تتجاوز الحدود */
+@media (max-width: 576px) {
+.card img, .card-img-top {
+max-height: 200px !important;
+object-fit: cover !important;
+}
+}
+
+
+/* 5️⃣ تحسين تجربة عرض أزرار "الروابط السريعة" */
+@media (max-width: 768px) {
+.row.text-center .col-md-3 {
+width: 100%;
+}
+.btn {
+font-size: 1rem !important;
+}
+}
+
+
+/* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

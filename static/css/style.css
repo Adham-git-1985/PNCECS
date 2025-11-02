@@ -926,6 +926,25 @@ html[dir="ltr"] .theme-root::after{
 }
 
 
+/* الطبقة الشفافة فوق الصور */
+.tatreez-overlay {
+  position: absolute;
+  inset: 0; /* يغطي كل مساحة البانر */
+  background: url("/static/images/tatreez.png") repeat center center / 300px auto;
+  opacity: 0.07; /* خفيف جدًا مثل ووترمارك */
+  pointer-events: none;
+  z-index: 2; /* فوق الصور ولكن تحت النصوص */
+  mix-blend-mode: multiply; /* يعطي تأثير مطبوع على الصور */
+}
+
+/* الوضع الليلي - تفتيح طفيف */
+.theme-root[data-theme="dark"] .tatreez-overlay,
+.theme-root[data-theme="auto"][data-theme-resolved="dark"] .tatreez-overlay {
+  opacity: 0.10;
+  filter: brightness(1.1);
+}
+
+
 
 /* ====================== تحسين التجاوب على الموبايل PNCECS ====================== */
 
@@ -953,7 +972,6 @@ right: auto !important;
 background: rgba(205,171,53,0.9);
 margin-top: 1rem;
 box-shadow: none;
-display: none !important;
 }
 .announcements-vertical-list {
 animation: none !important;
@@ -995,5 +1013,11 @@ font-size: 1rem !important;
 }
 }
 
+/* 📱 إخفاء عمود الإعلانات عند تصفح الموقع من الموبايل أو التابلت */
+@media (max-width: 992px) {
+  .announcements-vertical {
+    display: none !important;
+  }
+}
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

@@ -1034,5 +1034,39 @@ margin-right: 0 !important;
 }
 }
 
+/* 📱 تصحيح تراكب الشعار والنصوص في الموبايل */
+@media (max-width: 768px) {
+  .logo-bar .container {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .logo-bar img {
+    height: 80px !important;
+    margin-bottom: 8px;
+  }
+
+  .logo-bar .text-center div {
+    font-size: 0.95rem !important;
+    line-height: 1.4;
+  }
+}
+
+/* 📱 تصحيح عرض الصور العلوية في السلايدر */
+@media (max-width: 768px) {
+  #topCarousel img,
+  .carousel-item img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+  }
+
+  #topCarousel {
+    width: 100% !important;
+    overflow: hidden;
+  }
+}
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

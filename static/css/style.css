@@ -953,6 +953,7 @@ right: auto !important;
 background: rgba(205,171,53,0.9);
 margin-top: 1rem;
 box-shadow: none;
+display: none !important;
 }
 .announcements-vertical-list {
 animation: none !important;

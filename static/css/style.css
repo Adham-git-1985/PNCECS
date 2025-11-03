@@ -1113,47 +1113,4 @@ margin-right: 0 !important;
 }
 
 
-/* ✅ إصلاح شامل لتنسيق الملتقى الثقافي على الموبايل */
-@media (max-width: 992px) {
-  /* توسيط الحاوية */
-  .cultural-forum.container-fluid {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-  }
-
-  /* إخفاء الشريط الجانبي فقط في الموبايل */
-  .cultural-forum aside {
-    display: none !important;
-  }
-
-  /* جعل المحتوى الرئيسي بعرض الصفحة بالكامل */
-  .cultural-forum #forumContent {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    float: none !important;
-  }
-
-  /* تصحيح النص ليظهر بشكل سليم */
-  .cultural-forum .news-content {
-    text-align: right !important;
-    padding-right: 5px;
-    padding-left: 5px;
-  }
-
-  /* تصغير الصور قليلاً لتناسب الشاشة */
-  .cultural-forum .gallery img {
-    width: 150px !important;
-    height: auto !important;
-  }
-
-  /* تصغير الهوامش */
-  .cultural-forum .news-item {
-    margin-bottom: 1.5rem !important;
-    padding-bottom: 1.5rem !important;
-  }
-}
-
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

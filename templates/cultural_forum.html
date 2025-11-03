@@ -2,8 +2,7 @@
 {% block title %}الملتقى الثقافي{% endblock %}
 
 {% block content %}
-<div class="container-fluid my-5 cultural-forum" dir="rtl" id="top">
-
+<div class="container-fluid my-5" dir="rtl" id="top">
   <div class="row">
 
     <!-- الشريط الجانبي -->
@@ -25,7 +24,7 @@
     </aside>
 
     <!-- المحتوى الرئيسي -->
-    <section class="col-lg-9" id="forumContent">
+    <section class="col-12 col-lg-9 mx-auto" id="forumContent">
       <!-- رأس الصفحة داخل PDF -->
       <div id="pdfHeader" class="text-center mb-5" style="border-bottom:2px solid #cdab35; padding-bottom:10px;">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="PNCECS Logo"

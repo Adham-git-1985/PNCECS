@@ -1127,10 +1127,4 @@ margin-right: 0 !important;
     width: 100% !important;
   }
 
-  /* في حال كان هناك عنصر جانبي (إعلانات مثلاً) */
-  aside {
-    display: none !important;  /* إخفاؤه تمامًا في الموبايل */
-  }
-}
-
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

@@ -1112,19 +1112,5 @@ margin-right: 0 !important;
   }
 }
 
-/* إصلاح محاذاة المحتوى في الموبايل */
-@media (max-width: 768px) {
-  .container, .container-fluid {
-    margin-right: auto !important;
-    margin-left: auto !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-  }
-
-  /* لتوسيط محتوى صفحة الملتقى */
-  main, .content-wrapper {
-    margin: 0 auto !important;
-    width: 100% !important;
-  }
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

@@ -1112,5 +1112,30 @@ margin-right: 0 !important;
   }
 }
 
+/* إصلاح محاذاة صفحة الملتقى الثقافي في الموبايل */
+@media (max-width: 768px) {
+  /* يجعل كل المحتوى في منتصف الصفحة بدون تمدد أو إزاحة */
+  .container, .container-fluid {
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  /* إصلاح خاص للملتقى الثقافي فقط */
+  .cultural-forum, .cultural-section, #culturalForum {
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center;
+  }
+
+  /* يخفي عمود الإعلانات فقط إن كان موجود */
+  aside, .sidebar, .ads-column {
+    display: none !important;
+  }
+}
+
+
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

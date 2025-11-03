@@ -1112,40 +1112,34 @@ margin-right: 0 !important;
   }
 }
 
-/* 🎯 إصلاح دقيق لإزاحة الملتقى الثقافي على الموبايل */
+/* ✅ Fix Arabic layout alignment (when dir="rtl") */
+[dir="rtl"] .cultural-forum.container-fluid {
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Hide sidebar in mobile (RTL only) */
 @media (max-width: 992px) {
-
-  /* نجعل الحاوية بعرض الصفحة الحقيقي */
-  .cultural-forum.container-fluid {
-    width: 100% !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-    margin-right: auto !important;
-    margin-left: auto !important;
-    overflow-x: hidden !important;
-  }
-
-  /* إخفاء الشريط الجانبي تمامًا */
-  .cultural-forum aside {
+  [dir="rtl"] .cultural-forum aside {
     display: none !important;
   }
 
-  /* ضبط المحتوى الرئيسي ليملأ الصفحة */
-  #forumContent {
+  [dir="rtl"] #forumContent {
     width: 100% !important;
     margin: 0 auto !important;
     float: none !important;
     text-align: right !important;
   }
 
-  /* تصحيح محاذاة النصوص */
-  #forumContent .news-content {
+  [dir="rtl"] #forumContent .news-content {
     text-align: justify !important;
-    line-height: 1.8;
+    padding-inline: 10px !important;
   }
 
-  /* تصغير الصور قليلاً لتناسب العرض */
-  #forumContent img {
+  [dir="rtl"] #forumContent img {
     max-width: 100% !important;
     height: auto !important;
   }

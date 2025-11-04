@@ -1157,3 +1157,16 @@ margin-right: 0 !important;
 
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */
+
+/*  لإصلاح تداخل القائمة (بعد إضافة الإشارات |) مع الإطار والصور */
+body {
+  padding-top: 10px !important;
+}
+
+/* على الموبايل */
+@media (max-width: 768px) {
+  body {
+    padding-top: 20px !important;
+  }
+}
+

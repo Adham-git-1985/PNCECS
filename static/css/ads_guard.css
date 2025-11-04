@@ -3,7 +3,7 @@
 /* Default variables */
 :root{
   --ads-w: 0px;        /* width reserved on the right for fixed ads */
-  --header-h: 168px;   /* fallback header height */
+  --header-h: 175px;   /* fallback header height */
   --ads-gap: 20px;     /* small breathing space */
 }
 

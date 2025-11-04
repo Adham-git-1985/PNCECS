@@ -2,9 +2,14 @@
 {% block title %}{{ t('achievement_reports') }} - {{ t('site_name') }}{% endblock %}
 
 {% block content %}
+
+<div class="container my-5">
+
+  <h2 class="text-primary mb-4 text-center fs-2">{{ t('achievement_reports') }}</h2>
+
 <div class="container my-4">
   <div class="d-flex align-items-center justify-content-between mb-3">
-    <h1 class="h4 mb-0">{{ t('achievement_reports') }}</h1>
+    <h2 class="text-primary mb-4 text-center fs-2">{{ t('achievement_reports') }}</h2>
     <div class="btn-group">
       <a class="btn btn-outline-secondary" href="{{ pdf_url }}" download>
         {{ pick('تحميل PDF', 'Download PDF') }}
@@ -117,5 +122,6 @@
     zoom.addEventListener('input', () => queueRender(pageNum));
   });
 </script>
+</div>
 {% endblock %}
 

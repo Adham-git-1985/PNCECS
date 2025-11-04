@@ -2,6 +2,9 @@
 {% block title %}{{ t('achievement_reports') }} - ({{ pick('محلي بالكامل', 'Fully Local') }}){% endblock %}
 
 {% block content %}
+<div class="container my-5">
+
+  <h2 class="text-primary mb-4 text-center fs-2">{{ t('achievement_reports') }}</h2>
 <div class="container my-4">
   <div class="row g-3">
     <aside class="col-lg-3">
@@ -212,4 +215,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (first) first.click();
 });
 </script>
+</div>
 {% endblock %}

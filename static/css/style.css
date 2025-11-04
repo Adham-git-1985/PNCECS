@@ -1112,5 +1112,48 @@ margin-right: 0 !important;
   }
 }
 
+/* ✅ لتخفيض شريط القوائم قليلاً للأسفل */
+.navbar, .main-nav, nav {
+  margin-top: 10px !important;  /* نزّل الشريط لتحت 10px */
+}
+
+/* لو بدك تنزله أكثر */
+@media (max-width: 992px) {
+  .navbar, .main-nav, nav {
+    margin-top: 15px !important;
+  }
+
+
+/*  توحيد المسافة العلوية للعناوين في جميع الصفحات */
+
+/* على الشاشات الكبيرة (tablet) */
+@media (min-width: 992px) {
+  body {
+    padding-top: 50px !important;  /* مسافة تحت الشعار والقائمة */
+  }
+
+  .content-wrapper h1:first-of-type,
+  .content-wrapper h2:first-of-type,
+  .content-wrapper h3:first-of-type {
+    margin-top: 30px !important;   /* نزّل أول عنوان في كل صفحة */
+  }
+}
+
+/* على الموبايل */
+@media (max-width: 991px) {
+  body {
+    padding-top: 50px !important;  /* أعلى شوي لأن الهيدر أكبر */
+  }
+
+  .content-wrapper h1:first-of-type,
+  .content-wrapper h2:first-of-type,
+  .content-wrapper h3:first-of-type {
+    margin-top: 15px !important;
+  }
+}
+
+
+}
+
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

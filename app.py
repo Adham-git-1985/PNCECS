@@ -143,7 +143,7 @@ TRANSLATIONS = {
         "partners": "Partners",
         "achievement_reports": "Achievement Reports",
         "project_form": "Project Form",
-        "about": "About",
+        "about": "About PNCECS",
 
         # UI
         "latest_news": "Latest News",

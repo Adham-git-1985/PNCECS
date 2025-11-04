@@ -4,11 +4,10 @@
 </h3>{% endblock %}
 
 {% block content %}
-<p></p><p></p><p></p>
+<div class="container my-5">
 
-<h1 class="page-title mt-4 text-primary text-center">
-  {{ pick('نبذة عن اللجنة', 'About the Commission') }}
-</h1>
+  <h2 class="text-primary mb-4 text-center fs-2">{{ t('about') }}</h2>
+
 
 <div class="accordion" id="aboutAccordion">
 
@@ -450,5 +449,6 @@
     </div>
   </div>
 
+</div>
 </div>
 {% endblock %}

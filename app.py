@@ -1867,10 +1867,13 @@ def gallery_en():
 @app.route("/cultural_forum")
 def cultural_forum():
     import json
+    lang = session.get("lang", "ar")
     with open("cultural_forum_data.json", "r", encoding="utf-8") as f:
         posts = json.load(f)
     posts = sorted(posts, key=lambda x: x.get("date", ""), reverse=True)
-    return render_template("cultural_forum.html", posts=posts)
+    return render_template("cultural_forum.html", posts=posts, lang=lang)
+
+
 
 
 

@@ -2,11 +2,18 @@
 {% block title %}الملتقى الثقافي{% endblock %}
 
 {% block content %}
-<div class="container-fluid my-5 cultural-forum" dir="ltr" id="top">
+<div class="container-fluid my-5 cultural-forum" dir="rtl" id="top">
+
   <div class="row">
 
     <!-- الشريط الجانبي -->
     <aside class="col-lg-3 mb-4">
+      {% if not posts %}
+  <div class="alert alert-warning text-center mt-3">
+    لا توجد أخبار متاحة حاليًا.
+  </div>
+  {% endif %}
+
       <div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
         <div class="card-body">
           <h5 class="fw-bold mb-3" style="color:#cdab35;">🗂️ عناوين الأخبار</h5>

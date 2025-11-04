@@ -1112,37 +1112,5 @@ margin-right: 0 !important;
   }
 }
 
-/* ✅ Fix Arabic layout alignment (when dir="rtl") */
-[dir="rtl"] .cultural-forum.container-fluid {
-  padding-left: 15px !important;
-  padding-right: 15px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  overflow-x: hidden !important;
-}
-
-/* Hide sidebar in mobile (RTL only) */
-@media (max-width: 992px) {
-  [dir="rtl"] .cultural-forum aside {
-    display: none !important;
-  }
-
-  [dir="rtl"] #forumContent {
-    width: 100% !important;
-    margin: 0 auto !important;
-    float: none !important;
-    text-align: right !important;
-  }
-
-  [dir="rtl"] #forumContent .news-content {
-    text-align: justify !important;
-    padding-inline: 10px !important;
-  }
-
-  [dir="rtl"] #forumContent img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-}
 
 /* ====================== END OF RESPONSIVE IMPROVEMENTS ====================== */

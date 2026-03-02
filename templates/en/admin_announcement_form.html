@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2>{{ announcement and 'تعديل' or 'إضافة' }} إعلان</h2>
+<form method="post" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label>العنوان</label>
+    <input type="text" name="title" class="form-control" value="{{ announcement.title if announcement else '' }}" required>
+  </div>
+  <div class="mb-3">
+    <label>المحتوى</label>
+    <!-- بعد: 10 أسطر بالإضافة إلى حد أدنى للارتفاع -->
+<textarea name="content"
+          class="form-control"
+          rows="10"
+          style="min-height: 250px; resize: vertical;">
+  {{ announcement.content if announcement else '' }}
+</textarea>
+
+<script src="https://cdn.tiny.cloud/1/…/tinymce.min.js"></script>
+<script>
+  tinymce.init({ selector: '#editor', plugins: 'link', toolbar: 'bold italic link' });
+</script>
+  </div>
+ <!-- ==== حذف الصور القديمة ==== -->
+  {% if announcement and announcement.images %}
+    <div class="mb-3">
+      <label class="form-label">الصور الحالية (اختر للحذف)</label>
+      <div>
+        {% for img in announcement.images %}
+          <div class="form-check form-check-inline">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="delete_images"
+                   value="{{ img.id }}"
+                   id="del_img_{{ img.id }}">
+            <label class="form-check-label" for="del_img_{{ img.id }}">
+              صورة {{ loop.index }}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- ==== رفع صور جديدة ==== -->
+  <div class="mb-3">
+    <label class="form-label">رفع صور جديدة</label>
+    <input type="file" name="images" multiple class="form-control">
+  </div>
+
+  <!-- ==== حذف المرفقات القديمة (PDF) ==== -->
+  {% if announcement and announcement.attachments %}
+    <div class="mb-3">
+      <label class="form-label">المرفقات الحالية (اختر للحذف)</label>
+      <div>
+        {% for att in announcement.attachments %}
+          <div class="form-check">
+            <input class="form-check-input"
+                   type="checkbox"
+                   name="delete_attachments"
+                   value="{{ att.id }}"
+                   id="del_att_{{ att.id }}">
+            <label class="form-check-label" for="del_att_{{ att.id }}">
+              {{ att.filename.split('/')[-1] }}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- ==== رفع مرفقات جديدة ==== -->
+  <div class="mb-3">
+    <label class="form-label">رفع ملفات PDF جديدة</label>
+    <input type="file" name="attachments" multiple class="form-control">
+  </div>
+
+  <button class="btn btn-success">حفظ التعديلات</button>
+
+    </form>
+{% endblock %}

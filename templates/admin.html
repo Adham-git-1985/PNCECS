@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 800px;">
+    <div class="container my-5" style="max-width: 800px;">
+        <div class="container my-5" style="max-width: 800px;">
+<!-- زر تعبئة الترجمة الإنجليزية للأخبار القديمة (مرة واحدة) -->
+<form action="{{ url_for('admin_fill_en_once') }}" method="post" class="mb-3">
+  <button type="submit" class="btn btn-warning btn-sm">
+    ملء الترجمة الإنجليزية للأخبار القديمة
+  </button>
+</form>
+
+
+
+
+<div class="container my-5" style="max-width: 800px;">
+<h2 class="mb-4 text-primary text-center">🛠️ لوحة التحكم</h2>
+<!-- رسائل الفلاش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
+</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- الأزرار في نفس السطر -->
+<div class="d-flex justify-content-start gap-3 mb-4">
+<a class="btn btn-outline-primary btn-lg" href="{{ url_for('admin_top_images') }}">
+<i class="bi bi-image" style="font-size: 1.2rem;"></i> إدارة الصور العلوية
+        </a>
+<a class="btn btn-outline-primary btn-lg" href="{{ url_for('add_news') }}">
+<i class="bi bi-pencil" style="font-size: 1.2rem;"></i> ➕ إدارة الأخبار
+        </a>
+
+<a class="btn btn-outline-primary btn-lg" href="{{ url_for('admin_versions') }}">
+<i class="bi bi-file-earmark-pdf" style="font-size: 1.2rem;"></i> إدارة الإصدارات
+</a>
+
+<a class="btn btn-outline-primary btn-lg" href="{{ url_for('admin_announcements') }}">
+<i class="bi bi-pencil" style="font-size: 1.2rem;"></i> إدارة الإعلانات
+</a>
+
+</div>
+
+
+
+</div>
+{% endblock %}

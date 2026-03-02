@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">إدارة الإصدارات</h2>
+
+    <!-- رسائل الفلاش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- زر إضافة إصدار جديد -->
+    <div class="mb-3">
+        <a href="{{ url_for('add_version') }}" class="btn btn-primary" style="font-size: 1.1rem;">
+            ➕ إضافة إصدار جديد
+        </a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>العنوان</th>
+                <th>الفئة</th>
+                <th>الملف</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for version in versions %}
+            <tr>
+                <td>{{ version.title }}</td>
+                <td>{{ version.category }}</td>
+                <td>
+                    <a href="{{ url_for('static', filename=version.file_path) }}" target="_blank">عرض</a>
+                </td>
+                <td>
+                    <a href="{{ url_for('delete_version', id=version.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد من حذف هذا الإصدار؟');">حذف</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

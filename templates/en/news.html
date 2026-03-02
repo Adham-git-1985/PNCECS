@@ -1,0 +1,113 @@
+{% extends "/en/layout.html" %}
+{% block title %}الأخبار - اللجنة الوطنية{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 text-primary text-center">📰 News</h2>
+
+
+    <form method="GET" class="mb-4">
+        <div class="row g-2">
+
+            <div class="col-sm-3">
+                <button type="submit" class="btn btn-primary w-100">search</button>
+            </div>
+                     <div class="col-sm-9">
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control"
+                    placeholder="🔍 Search the news..."
+                    value="{{ query }}"
+                >
+            </div>
+        </div>
+    </form>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        {% for item in news_list %}
+        <div class="col">
+            <div class="card h-100">
+                {% set image = item.gallery[0] if item.gallery else None %}
+                {% if image %}
+                <img
+                    src="{{ url_for('static', filename='images/gallery/' ~ image.filename) }}"
+                    class="card-img-top"
+                    alt="{{ image.title or 'صورة' }}"
+                >
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.title }}</h5>
+                    <p class="card-text">{{ item.content[:180] }}...</p>
+                    <a
+                        href="{{ url_for('news_detail', news_id=item.id) }}"
+                        class="btn btn-outline-primary btn-sm"  target="_blank"  rel="noopener noreferrer"
+                    >
+                        قراءة الخبر
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if pages > 1 %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center flex-wrap">
+            {# زر الصفحة السابقة #}
+            <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                <a
+                    class="page-link"
+                    href="?page={{ page-1 }}{% if query %}&q={{ query }}{% endif %}"
+                    aria-label="Previous"
+                >
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            {# عرض الأرقام مع نقاط وسطية #}
+            {% if pages <= 7 %}
+                {% for p in range(1, pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a
+                        class="page-link"
+                        href="?page={{ p }}{% if query %}&q={{ query }}{% endif %}"
+                    >
+                        {{ p }}
+                    </a>
+                </li>
+                {% endfor %}
+            {% else %}
+                {% for p in range(1, pages + 1) %}
+                    {% if p <= 5 or p > pages - 2 %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a
+                                class="page-link"
+                                href="?page={{ p }}{% if query %}&q={{ query }}{% endif %}"
+                            >
+                                {{ p }}
+                            </a>
+                        </li>
+                    {% elif p == 6 %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&hellip;</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {# زر الصفحة التالية #}
+            <li class="page-item {% if page >= pages %}disabled{% endif %}">
+                <a
+                    class="page-link"
+                    href="?page={{ page+1 }}{% if query %}&q={{ query }}{% endif %}"
+                    aria-label="Next"
+                >
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

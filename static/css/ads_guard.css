@@ -1,0 +1,425 @@
+/* === Zoom-safe ads sidebar (prevents overlap with hero/slider) ========== */
+/* الهدف:
+   1) عند تكبير الخط (Zoom) لا يتداخل عمود الإعلانات مع السلايدر.
+   2) عدم ظهور أي سكرول (داخلي) على السلايدر.
+   3) في الموبايل: السلايدر يطلع لفوق أكثر (بدون أن يدخل تحت الهيدر الثابت).
+*/
+
+/* Fallbacks (يتم تحديث --header-h تلقائياً عبر ads_guard.js) */
+:root{
+  --header-h: 175px;
+  /* فراغ صغير جداً بين أسفل الهيدر وبداية الهيرو */
+  --ads-gap: 0px;
+
+  /* ارتفاع إطار الصورة داخل السلايدر (ليس السلايدر كامل) */
+  --hero-img-h: 520px;
+
+  /* مقدار رفع السلايدر في الموبايل */
+  /* ⚠️ إذا ارتفع السلايدر ودخل داخل الهيدر، قلّل هذه القيمة */
+  --home-hero-lift-mobile: -50px;
+}
+
+/* ================================================================
+   Global header offset (ALL pages)
+   - style.css contains large fixed padding-top values for .content-wrapper
+     which makes inner pages (news/gallery/...) too far from the header.
+   - Here we override it to use the real header height measured by ads_guard.js.
+   ================================================================ */
+body:not(.home-page) .content-wrapper{
+  padding-top: calc(var(--header-h, 175px) + 10px) !important;
+}
+/* Reduce Bootstrap's py-4 top padding on inner pages (keeps the page tighter) */
+body:not(.home-page) .content-wrapper > .container.py-4{
+  padding-top: 12px !important;
+}
+
+/* Force the fixed header behavior on mobile/tablet (some legacy CSS sets it to relative). */
+@media (max-width: 992px){
+  header.fixed-top{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1030;
+  }
+}
+
+/* ================================================================
+   Top menu behavior
+   1) Home page (desktop): text-only (no icons)
+   2) Tablet/Mobile: keep one row + icons + SHORT labels
+      and ensure labels are visible on very small screens (iPhone SE)
+   ================================================================ */
+
+/* 1) Home page desktop: show only text (no icons) */
+@media (min-width: 1200px){
+  html.home-page .menu-bar .nav-link i{
+    display: none !important;
+  }
+  html.home-page .menu-bar .nav-link{
+    padding-top: .75rem !important;
+    padding-bottom: .75rem !important;
+  }
+}
+
+/* 2) Tablet + Mobile: keep the nav-link content aligned (icon above text) */
+@media (max-width: 1199px){
+  .menu-bar .nav-link{
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+  .menu-bar .nav-link i{
+    display: block;
+    line-height: 1;
+  }
+  .menu-bar .nav-link .label-short,
+  .menu-bar .nav-link .label-full{
+    display: block;
+    line-height: 1.1;
+    max-width: 100%;
+  }
+}
+
+
+/* 3) Tablet + Mobile: uniform, fixed spacing between top menu items (no uneven padding) */
+@media (max-width: 991.98px){
+  /* remove markup padding that makes spacing look uneven */
+  .menu-bar .navbar-nav .nav-item.ps-3,
+  .menu-bar .navbar-nav .nav-item[class*=" ps-3"]{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  /* fixed gap between items */
+  .menu-bar .navbar-nav{
+    flex-wrap: nowrap !important;
+    width: 100%;
+    justify-content: center;
+    gap: .7rem !important;     /* ثابت */
+  }
+}
+
+/* very small phones: slightly smaller fixed gap */
+@media (max-width: 360px){
+  .menu-bar .navbar-nav{ gap: .45rem !important; }
+}
+/* iPhone SE and similar widths: make sure the short label is visible */
+@media (max-width: 360px){
+  .menu-bar .nav-link .label-short{
+    font-size: .68rem !important;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .menu-bar .nav-link i{ font-size: 1.65rem !important; }
+}
+
+/* === Home hero alignment (Arabic/English + header spacing) ================= */
+/*
+  - Ensures the hero (top images) starts *below* the fixed header even on the home page
+  - Keeps the announcements header and the top-images frame aligned vertically
+  - Sidebar position follows page direction automatically:
+      Arabic (rtl)  -> sidebar appears on the right
+      English (ltr) -> sidebar appears on the left
+*/
+
+/* 1) Push home-page content below the real header height (supports browser zoom) */
+.home-page .content-wrapper{
+  padding-top: calc(var(--header-h, 175px) + var(--ads-gap, 0px)) !important;
+}
+/* Remove the extra top padding from the inner container on home-page to avoid over-spacing */
+.home-page .content-wrapper > .container{
+  padding-top: 0 !important;
+}
+
+/* Keep the hero row aligned at the same top baseline */
+.home-page .home-hero-row{
+  align-items: flex-start;
+}
+
+/* منع أي سكرول أفقي ناتج عن تكبير النص/العناوين داخل الهيرو */
+.home-page .home-hero-wrap,
+.home-page .content-wrapper{
+  overflow-x: hidden;
+}
+
+/* حماية إضافية: منع أي سكرول أفقي على الصفحة الرئيسية */
+body.home-page{ overflow-x: hidden; }
+
+/* رفع صف (السلايدر + الإعلانات) للأعلى قليلاً بدون الاعتماد على Bootstrap mt-* */
+.home-page .home-hero-wrap{ margin-top: 0 !important; }
+
+/* موبايل: ارفع السلايدر لفوق أكثر (بدون تداخل مع الهيدر) */
+@media (max-width: 768px){
+  .home-page .content-wrapper{
+    padding-top: calc(var(--header-h, 175px) + var(--ads-gap, 0px) - var(--home-hero-lift-mobile, 18px)) !important;
+  }
+}
+
+
+
+/* === Announcements movement WITHOUT scrollbars ========================= */
+/*
+  - الحركة (scroll-up) معرفة أصلاً في static/css/style.css.
+  - بعض المتصفحات تُظهر شريط تمرير (Scrollbar) داخل عمود الإعلانات عند وجود Animation.
+    هنا نضمن أن العمود غير قابل للتمرير ونخفي أي Scrollbar احتياطيًا.
+*/
+
+.home-page .announcements-vertical{
+  overflow: hidden !important;
+}
+.home-page .announcements-vertical,
+.home-page .announcements-vertical-list{
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE/Edge legacy */
+}
+.home-page .announcements-vertical::-webkit-scrollbar,
+.home-page .announcements-vertical-list::-webkit-scrollbar{
+  width: 0;
+  height: 0;
+}
+
+/* 2) When announcements are hidden on <=1199px, hide the whole column to avoid empty space */
+@media (max-width: 1199px){
+  .home-page .hero-ads-col{ display: none !important; }
+  .home-page .announcements-vertical{ display: none !important; }
+  .home-page .home-hero-row .hero-slider-col{
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ✅ على الشاشات المتوسطة والكبيرة: نجعل العمود Sticky داخل الشبكة بدل Fixed على الشاشة */
+@media (min-width: 992px){
+  .announcements-vertical{
+    position: sticky !important;
+    top: calc(var(--header-h, 175px) + var(--ads-gap, 0px)) !important;
+
+    /* إبقاءه داخل العمود (لا يهرب يمين الشاشة) */
+    right: auto !important;
+    left: auto !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    /* حد أدنى يساوي إطار الصورة */
+    min-height: var(--hero-img-h, 520px) !important;
+    height: auto !important;
+    max-height: none !important;
+    /* ✅ مهم: لا نسمح بظهور أي Scrollbar داخل العمود */
+    overflow: hidden !important;
+
+    z-index: 20;
+  }
+}
+
+/* ✅ Desktop: امنع أي سكرول داخلي للسلايدر.
+   لا نثبت ارتفاع السلايدر نفسه، بل نثبت فقط ارتفاع إطار الصورة.
+*/
+@media (min-width: 992px){
+  .home-page #topCarousel{
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .home-page #topCarousel .carousel-inner,
+  .home-page #topCarousel .carousel-item,
+  .home-page #topCarousel .carousel-item-layout{
+    height: auto !important;
+  }
+
+  .home-page #topCarousel .top-image-frame{
+    box-sizing: border-box;
+    height: var(--hero-img-h, 520px) !important;
+    overflow: hidden;
+  }
+  .home-page #topCarousel .top-image-frame img{
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    display: block;
+  }
+}
+
+/* ✅ العنوان أسفل الصورة + الظل حول العنوان فقط
+   - محصور فقط بسلايدر الصفحة الرئيسية
+*/
+.home-page #topCarousel .carousel-caption{
+  position: static !important;
+  inset: auto !important;
+  opacity: 1 !important;
+  animation: none !important;
+  z-index: 30;
+
+  /* نزيل الخلفية/التغليف الكبير ونتركه للعنوان فقط */
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+
+  /* مسافة بسيطة بين أسفل الصورة والعنوان */
+  margin: 10px 12px 0 12px !important;
+  text-align: center;
+}
+
+/* منع أي تجاوز أفقي ناتج عن border داخل إطار الصورة في كل المقاسات */
+.home-page #topCarousel .top-image-frame{ box-sizing: border-box; }
+
+.home-page #topCarousel .carousel-caption h4{
+  margin: 0 !important;
+}
+
+/* ظل خفيف فقط حول رابط العنوان */
+.home-page #topCarousel .carousel-caption h4 a{
+  display: inline-block;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+
+  /* ✅ منع تمدد العنوان بسطر واحد (وهو سبب السكرول الأفقي) */
+  max-width: 100%;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* نص الوصف تحت العنوان (إذا كان موجودًا) بلون مناسب أسفل الصورة */
+.home-page #topCarousel .carousel-caption p{
+  color: #444 !important;
+}
+
+/* ✅ حماية إضافية: لا تسمح للسلايدر أن يتجاوز عموده */
+#topCarousel{
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ✅ موبايل: العنوان يظهر بشكل مرتب (بدون ضغط) */
+@media (max-width: 767px){
+  .home-page #topCarousel .carousel-caption{
+    margin: 8px 10px 0 10px !important;
+  }
+  .home-page #topCarousel .carousel-caption h4 a{
+    font-size: 0.95rem;
+    padding: 6px 10px;
+  }
+  .home-page #topCarousel .carousel-caption p{
+    font-size: 0.85rem;
+  }
+}
+
+
+/* hero row safety: avoid any horizontal overflow from row gutters */
+.home-page .home-hero-row{ max-width: 100%; }
+.home-page .home-hero-row > *{ max-width: 100%; }
+
+
+/* ===================== v21 adjustments =====================
+   - Remove top menu icons on ALL pages/devices (text only).
+   - Home (mobile): lower hero a bit (no lift up).
+   - Inner pages: pull content closer to header (less top gap).
+   - Keep announcements animation without triggering scrollbars.
+============================================================ */
+
+:root{
+  /* Home (mobile): drop hero slightly down (negative lift = more padding-top) */
+  --home-hero-lift-mobile: -50px;
+}
+
+/* ---- Top menu: text-only on all devices ---- */
+.menu-bar .nav-link i{ display:none !important; }
+.menu-bar .nav-link{
+  display: block !important;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* keep all items in ONE row */
+.menu-bar .navbar-nav{
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+  justify-content: space-between !important;
+  gap: .35rem !important;
+}
+
+/* Distribute items evenly so the full labels have a better chance to fit */
+.menu-bar .navbar-nav .nav-item{
+  flex: 1 1 0;
+  min-width: 0;
+}
+.menu-bar .navbar-nav .nav-link{
+  width: 100%;
+}
+
+/* make items more compact so they fit on mobile/tablet without breaking the layout */
+.menu-bar .navbar-nav .nav-item{
+  padding-inline-start: .6rem !important;
+}
+.menu-bar .navbar-nav .nav-link{
+  padding: .55rem .55rem !important;
+  font-weight: 800;
+}
+
+/* Desktop: show full label, hide short */
+@media (min-width: 992px){
+  .menu-bar .nav-link .label-full{ display:inline !important; }
+  .menu-bar .nav-link .label-short{ display:none !important; }
+}
+
+/* Tablet + Mobile: show label-short (now full words) and keep one row */
+@media (max-width: 991px){
+  .menu-bar .navbar-nav{
+    gap: .20rem !important;
+  }
+  .menu-bar .navbar-nav .nav-item{
+    border-inline-start: 0 !important;
+    padding-inline-start: .10rem !important;
+  }
+  .menu-bar .nav-link{
+    padding: .45rem .18rem !important;
+    font-size: .78rem;
+  }
+  .menu-bar .nav-link .label-full{ display:none !important; }
+  .menu-bar .nav-link .label-short{
+    display:inline-block !important;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+}
+
+/* Extra-tight for small phones */
+@media (max-width: 480px){
+  .menu-bar .nav-link{
+    font-size: .72rem !important;
+    padding: .42rem .14rem !important;
+  }
+}
+
+/* iPhone SE / very small widths: tighten more so everything remains one row */
+@media (max-width: 360px){
+  .menu-bar .nav-link{
+    font-size: .68rem !important;
+    padding: .40rem .10rem !important;
+  }
+}
+
+/* ---- Home page: mobile hero should NOT be raised too much ---- */
+@media (max-width: 768px){
+  .home-page .content-wrapper{
+    /* push it down slightly so it doesn't sit inside the header frame */
+    padding-top: calc(var(--header-h, 175px) + 10px) !important;
+  }
+}
+
+/* ---- Inner pages: bring content UP closer to header (home page unchanged) ---- */
+body:not(.home-page) .content-wrapper{
+  padding-top: max(0px, calc(var(--header-h, 175px) - 12px)) !important;
+}
+@media (max-width: 768px){
+  body:not(.home-page) .content-wrapper{
+    padding-top: max(0px, calc(var(--header-h, 175px) - 18px)) !important;
+  }
+}
+body:not(.home-page) .content-wrapper > .container.py-4{
+  padding-top: 6px !important;
+}

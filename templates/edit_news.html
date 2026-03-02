@@ -1,0 +1,58 @@
+
+{% extends "layout.html" %}
+{% block title %}تعديل الخبر{% endblock %}
+
+{% block content %}
+
+
+
+
+<div class="container my-5" style="max-width: 700px;">
+    <h2 class="mb-4 text-center">✏️ تعديل الخبر</h2>
+
+    <!-- رسائل الفلاش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="border p-4 bg-light rounded">
+        <div class="mb-3">
+            <label for="title" class="form-label">عنوان الخبر</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ news.title }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">محتوى الخبر</label>
+            <textarea class="form-control" id="content" name="content" rows="6" required>{{ news.content }}</textarea>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="link" class="form-label">رابط المصدر</label>
+            <input type="url" class="form-control" id="link" name="link" value="{{ news.link }}">
+        </div>
+        <!-- ===== English fields (optional) ===== -->
+        <details class="mt-3 mb-2">
+          <summary class="fw-semibold">English Translation (Optional)</summary>
+          <div class="mt-3">
+            <label class="form-label">Title (English)</label>
+            <input type="text" name="title_en" class="form-control" value="{{ news.title_en or '' }}" placeholder="News title in English">
+          </div>
+          <div class="mt-3">
+            <label class="form-label">Content (English)</label>
+            <textarea name="content_en" class="form-control" rows="6" placeholder="News content in English">{{ news.content_en or '' }}</textarea>
+          </div>
+
+        </details>
+
+        <button type="submit" class="btn btn-primary w-100">💾 حفظ التعديلات</button>
+    </form>
+</div>
+{% endblock %}

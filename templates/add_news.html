@@ -1,0 +1,188 @@
+
+{% extends "layout.html" %}
+{% block title %}لوحة التحكم{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 800px;">
+    <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
+
+    <!-- رسائل الفلاش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+<!-- نموذج إضافة خبر -->
+    <form method="POST" enctype="multipart/form-data" class="border p-4 bg-light rounded mb-5">
+        <h4 class="mb-3">➕ إضافة خبر جديد</h4>
+        <div class="mb-3">
+            <label for="title" class="form-label">عنوان الخبر</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">محتوى الخبر</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+        </div>
+
+        <!-- ===== English fields (optional) ===== -->
+        <details class="mt-3 mb-2">
+          <summary class="fw-semibold">English Translation (Optional)</summary>
+          <div class="mt-3">
+            <label class="form-label">Title (English)</label>
+            <input type="text" name="title_en" class="form-control" placeholder="News title in English">
+          </div>
+          <div class="mt-3">
+            <label class="form-label">Content (English)</label>
+            <textarea name="content_en" class="form-control" rows="6" placeholder="News content in English"></textarea>
+          </div>
+            <div class="mb-3">
+              <label for="gallery_title_en" class="form-label">عنوان الصورة (إنجليزي) – اختياري</label>
+              <input type="text" class="form-control" id="gallery_title_en" name="gallery_title_en">
+            </div>
+            <div class="mb-3">
+              <label for="gallery_description_en" class="form-label">وصف الصورة (إنجليزي) – اختياري</label>
+              <textarea class="form-control" id="gallery_description_en" name="gallery_description_en" rows="3"></textarea>
+            </div>
+
+        </details>
+
+        <!-- ===== /English fields ===== -->
+
+
+        <div class="mb-3">
+            <label for="link" class="form-label">رابط المصدر (اختياري)</label>
+            <input type="url" class="form-control" id="link" name="link">
+        </div>
+        <hr>
+        <div class="mb-3">
+            <label for="image" class="form-label">صورة للمعرض (اختياري)</label>
+            <input type="file" name="images" id="image" class="form-control" multiple accept="image/*">
+            <small class="form-text text-muted">يمكنك اختيار أكثر من صورة (Ctrl+Click).</small>
+
+        </div>
+        <div class="mb-3">
+            <label for="gallery_title" class="form-label">عنوان الصورة (اختياري)</label>
+            <input type="text" class="form-control" id="gallery_title" name="gallery_title">
+        </div>
+        <div class="mb-3">
+            <label for="gallery_description" class="form-label">وصف الصورة (اختياري)</label>
+            <textarea class="form-control" id="gallery_description" name="gallery_description" rows="3"></textarea>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary w-100">💾 حفظ الخبر</button>
+    </form>
+
+   <!-- عرض الأخبار -->
+<h4 class="mb-3">📰 الأخبار</h4>
+<div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+  {% for item in news_items %}
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ item.title }}</h5>
+        <p class="card-text text-muted small">
+          {{ item.created_at.strftime('%Y-%m-%d') }}
+        </p>
+
+
+        <div class="d-flex justify-content-between">
+          <a href="{{ url_for('edit_news', news_id=item.id) }}"
+             class="btn btn-sm btn-outline-primary">✏️ تعديل</a>
+          <form method="POST" action="{{ url_for('delete_news', news_id=item.id) }}"
+                onsubmit="return confirm('هل أنت متأكد من حذف هذا الخبر؟');">
+            <button type="submit" class="btn btn-sm btn-outline-danger">🗑 حذف</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+    <!-- عرض الصور -->
+    <h4 class="mb-3">🖼️ الصور المرفوعة</h4>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for image in images %}
+        <div class="col">
+            <div class="card h-100">
+                <a href="{{ url_for('static', filename='images/gallery/' + image.filename) }}" data-lightbox="admin-gallery" data-title="{{ image.title }}">
+                    <img src="{{ url_for('static', filename='images/gallery/' + image.filename) }}" class="card-img-top" alt="{{ image.title or 'صورة' }}">
+                </a>
+                <div class="card-body">
+                    {% if image.title %}<h6 class="card-title">{{ image.title }}</h6>{% endif %}
+                    {% if image.description %}<p class="text-muted small">{{ image.description }}</p>{% endif %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('edit_image', image_id=image.id) }}" class="btn btn-sm btn-outline-secondary">✏️ تعديل</a>
+                        <form action="{{ url_for('delete_image', image_id=image.id) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الصورة؟');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">🗑 حذف</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+   {# أزرار الصفحات #}
+{% if news_pagination.pages > 1 %}
+<nav aria-label="News pagination">
+  <ul class="pagination justify-content-center">
+    {% if news_pagination.has_prev %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ news_pagination.prev_num }}">السابق</a>
+    </li>
+    {% endif %}
+{# حساب نافذة الأرقام #}
+{% set total = news_pagination.pages %}
+{% set current = news_pagination.page %}
+{% set window = 2 %} {# عدد الأرقام قبل وبعد الصفحة الحالية #}
+{% set start = 1 if current - window < 1 else current - window %}
+{% set end   = total if current + window > total else current + window %}
+
+{# رابط الصفحة الأولى و«…» إن لزم الأمر #}
+{% if start > 1 %}
+  <li class="page-item">
+    <a class="page-link" href="?page=1">1</a>
+  </li>
+  {% if start > 2 %}
+    <li class="page-item disabled"><span class="page-link">…</span></li>
+  {% endif %}
+{% endif %}
+
+{# الأرقام المحصورة في النافذة #}
+{% for p in range(start, end+1) %}
+  <li class="page-item {% if p == current %}active{% endif %}">
+    <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+  </li>
+{% endfor %}
+
+{# «…» ورابط الصفحة الأخيرة إن لزم الأمر #}
+{% if end < total %}
+  {% if end < total - 1 %}
+    <li class="page-item disabled"><span class="page-link">…</span></li>
+  {% endif %}
+  <li class="page-item">
+    <a class="page-link" href="?page={{ total }}">{{ total }}</a>
+  </li>
+{% endif %}
+
+    {% if news_pagination.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ news_pagination.next_num }}">التالي</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+</div>
+
+{% endblock %}

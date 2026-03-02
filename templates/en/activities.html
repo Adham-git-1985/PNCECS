@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>الأنشطة</h2>
+<ul>
+    {% for act in activities %}
+    <li>{{ act.date }} - {{ act.title }} ({{ act.location }})</li>
+    {% endfor %}
+</ul>
+{% endblock %}

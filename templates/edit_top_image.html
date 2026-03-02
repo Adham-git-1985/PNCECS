@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block title %}تعديل الصورة العلوية{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow p-4 border-0 rounded">
+    <h2 class="mb-4 text-center" style="color: #cdab35;">✏️ تعديل الصورة العلوية</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" class="mb-4">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">عنوان الصورة</label>
+          <input type="text" name="title" value="{{ image.title or '' }}" class="form-control">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">الخبر المرتبط (اختياري)</label>
+          <select name="news_id" class="form-select">
+            <option value="">بدون ارتباط بخبر</option>
+            {% for news in news_list %}
+              <option value="{{ news.id }}" {% if image.news_id == news.id %}selected{% endif %}>{{ news.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-12">
+          <label class="form-label">الوصف</label>
+          <textarea name="description" class="form-control" rows="3">{{ image.description or '' }}</textarea>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">تغيير الصورة (اختياري)</label>
+          <input type="file" name="new_image" class="form-control">
+        </div>
+
+        <div class="col-md-6 text-center">
+          <label class="form-label">الصورة الحالية</label>
+          <img src="{{ url_for('static', filename='images/top_images/' + image.image) }}" class="img-thumbnail" style="max-height: 200px;" alt="الصورة الحالية">
+        </div>
+         <!-- English Translation Card -->
+        <div class="col-12">
+          <div class="card mt-3 shadow-sm border-0" style="border-top:3px solid #cdab35; background:#fffef8;">
+            <div class="card-body">
+              <h6 class="card-title mb-3" style="color:#cdab35; font-weight:600;">🇬🇧 English Translation</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-muted">Title (English)</label>
+                  <input type="text" name="title_en" value="{{ image.title_en or '' }}" class="form-control">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted">Caption (English)</label>
+                  <input type="text" name="caption_en" value="{{ image.caption_en or '' }}" class="form-control">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label text-muted">Description (English)</label>
+                  <textarea name="description_en" class="form-control" rows="2">{{ image.description_en or '' }}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-12 text-end mt-4">
+          <button type="submit" class="btn btn-success px-4">💾 حفظ التعديلات</button>
+          <a href="{{ url_for('admin_top_images') }}" class="btn btn-secondary">🔙 العودة</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+
+{% extends "layout.html" %}
+{% block title %}إدارة الصور العلوية{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow border-0 rounded p-4">
+    <h2 class="text-center mb-4" style="color: #cdab35;">🖼️ إدارة الصور العلوية (Top Images)</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- نموذج البحث والترتيب -->
+    <form method="GET" action="{{ url_for('admin_top_images') }}" class="row g-3 mb-4">
+      <div class="col-md-8">
+        <input type="text" name="q" class="form-control" placeholder="🔍 ابحث عن صورة أو وصف..." value="{{ query or '' }}">
+      </div>
+      <div class="col-md-4">
+        <select name="sort_by" class="form-select">
+          <option value="created_at_desc" {% if sort_by == 'created_at_desc' %}selected{% endif %}>📅 الأحدث أولاً</option>
+          <option value="created_at_asc" {% if sort_by == 'created_at_asc' %}selected{% endif %}>📅 الأقدم أولاً</option>
+          <option value="title_asc" {% if sort_by == 'title_asc' %}selected{% endif %}>🔤 العنوان - تصاعدي</option>
+          <option value="title_desc" {% if sort_by == 'title_desc' %}selected{% endif %}>🔤 العنوان - تنازلي</option>
+        </select>
+      </div>
+      <div class="col-md-12 text-end">
+        <button type="submit" class="btn btn-outline-primary px-4">🔎 بحث</button>
+      </div>
+    </form>
+
+    <!-- نموذج إضافة صورة جديدة -->
+    <div class="card mb-5">
+      <div class="card-body">
+        <h5 class="mb-3">➕ إضافة صورة علوية جديدة</h5>
+        <form action="{{ url_for('admin_top_images') }}" method="POST" enctype="multipart/form-data" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">الصورة</label>
+            <input type="file" name="image" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">عنوان الصورة</label>
+            <input type="text" name="title" class="form-control">
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">الوصف</label>
+            <textarea name="description" class="form-control" rows="2"></textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">عنوان الخبر المرتبط</label>
+            <input type="text" name="news_title" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">محتوى الخبر المرتبط</label>
+            <textarea name="news_content" class="form-control" rows="2"></textarea>
+          </div>
+
+          <!-- English Translation Card -->
+          <div class="col-12">
+            <div class="card mt-3 shadow-sm border-0" style="border-top:3px solid #cdab35; background:#fffef8;">
+              <div class="card-body">
+                <h6 class="card-title mb-3" style="color:#cdab35; font-weight:600;">🇬🇧 English Translation</h6>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label text-muted">Title (English)</label>
+                    <input type="text" name="title_en" class="form-control" placeholder="Enter English title">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label text-muted">Caption (English)</label>
+                    <input type="text" name="caption_en" class="form-control" placeholder="Enter English caption">
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label text-muted">Description (English)</label>
+                    <textarea name="description_en" class="form-control" rows="2" placeholder="Enter English description"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-md-12 text-end">
+            <button type="submit" class="btn btn-success px-4">➕ إضافة</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- عرض الصور -->
+    <div class="row">
+      {% for img in top_images %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <img src="{{ url_for('static', filename='images/top_images/' + img.image) }}" class="card-img-top" alt="{{ img.title or 'صورة' }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ img.title or 'بدون عنوان' }}</h5>
+            <p class="card-text small text-muted">{{ img.description or '' }}</p>
+            <p class="text-muted small mt-2">🕒 أضيفت بتاريخ: {{ img.created_at.strftime('%Y-%m-%d %H:%M') if img.created_at else 'غير محدد' }}</p>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+              <form method="POST" action="{{ url_for('delete_top_image', image_id=img.id) }}"
+                    onsubmit="return confirm('هل أنت متأكد من حذف هذه الصورة؟');">
+                <button type="submit" class="btn btn-sm btn-danger">🗑️ حذف</button>
+              </form>
+              <a href="{{ url_for('edit_top_image', image_id=img.id) }}" class="btn btn-sm btn-warning">✏️ تعديل</a>
+              {% if img.news_id %}
+              <a href="{{ url_for('news_detail', news_id=img.news_id) }}" class="btn btn-sm btn-info text-white">🔗 عرض الخبر</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

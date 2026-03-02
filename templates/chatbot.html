@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PNCECS Chat Bot (Themed + Animated Title)</title>
+<style>
+  :root{
+    --pn-primary: #cdab35;
+    --pn-primary-hover:#b8942e;
+    --pn-text-on-primary:#212529;
+    --pn-bg:#ffffff;
+    --pn-text:#1f1f1f;
+    --pn-border:#e6e6e6;
+    --pn-surface:#f7f7f7;
+
+    --pn-left:16px;
+    --pn-bottom-btn:22px;
+    --pn-bottom-panel:90px;
+    --pn-gap: -60px;
+    --pn-width: 340px;
+    --pn-radius:16px;
+    --pn-font: "Cairo", "Tahoma", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+    /* الحركة */
+    --pn-anim-duration: 1s;
+    --pn-anim-ease: cubic-bezier(.62,.81,.56,1);
+    --pn-anim-pulse-duration: 2.2s;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --pn-bg:#161616;
+      --pn-text:#eaeaea;
+      --pn-border:#2a2a2a;
+      --pn-surface:#111315;
+    }
+  }
+
+  /* زر الشات */
+  .pn-bot-btn{
+    position:fixed;
+    bottom:var(--pn-bottom-btn);
+    left:var(--pn-left);
+    z-index:1050;
+    border:0;
+    border-radius:999px;
+    padding:14px 18px;
+    min-width:48px;
+    min-height:48px;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+    background:var(--pn-primary);
+    color:var(--pn-text-on-primary);
+    cursor:pointer;
+    transition:background .2s ease, transform .06s ease, box-shadow .2s ease;
+    font-family:var(--pn-font);
+  }
+  .pn-bot-btn:hover{ background:var(--pn-primary-hover); }
+  .pn-bot-btn:active{ transform:scale(.98); }
+
+  /* اللوحة */
+  .pn-bot-panel{
+    position:fixed;
+    bottom:var(--pn-bottom-panel);
+    left:auto; right:auto;
+    width:var(--pn-width);
+    max-width:92vw;
+    max-height:75vh;
+    background:var(--pn-bg);
+    color:var(--pn-text);
+    border-radius:var(--pn-radius);
+    border:1px solid var(--pn-border);
+    box-shadow:0 16px 40px rgba(0,0,0,.25);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    z-index:1050;
+    direction:rtl;
+    font-family:var(--pn-font);
+  }
+
+  /* الهيدر + العنوان المتحرك */
+  .pn-bot-header{
+    position:relative;
+    padding:12px 14px;
+    background:var(--pn-primary);
+    color:var(--pn-text-on-primary);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .pn-title{
+    position:relative;
+    font-weight:800;
+    letter-spacing:.2px;
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    isolation:isolate; /* لكي تظهر الطبقات أعلى الخلفية */
+  }
+  /* شُرطة ذهبية لطيفة قبل العنوان */
+  .pn-title::before{
+    content:"";
+    width:10px; height:10px;
+    border-radius:50%;
+    background:linear-gradient(135deg, #ffe38c, var(--pn-primary));
+    box-shadow:0 0 0 0 rgba(205,171,53,.45);
+    transform:scale(1);
+    transition:transform .2s;
+    /* نبضة دورية هادئة */
+    animation: pn-gold-pulse var(--pn-anim-pulse-duration) ease-in-out infinite;
+  }
+  /* خط سفلي ذهبي متحرك */
+  .pn-title::after{
+    content:"";
+    position:absolute;
+    inset:auto 0 -4px 0; /* أسفل النص */
+    height:3px;
+    background:linear-gradient(90deg, #ffe38c, var(--pn-primary));
+    transform-origin:right;
+    transform:scaleX(0);
+    border-radius:2px;
+  }
+
+  /* عند الفتح نُشغّل الدخول والخط السفلي */
+  .is-open .pn-title{
+    animation: pn-fade-slide var(--pn-anim-duration) var(--pn-anim-ease) both;
+  }
+  .is-open .pn-title::after{
+    animation: pn-underline .7s var(--pn-anim-ease) .15s both;
+  }
+  /* تأثير بسيط عند التحويم */
+  .pn-title:hover::before{ transform:scale(1.1); }
+
+  /* الجسم */
+  .pn-bot-body{
+    padding:12px;
+    height:57vh;
+    overflow:auto;
+    background:var(--pn-surface);
+  }
+
+  /* شريط الإدخال */
+  .pn-bot-input{
+    display:flex;
+    gap:8px;
+    padding:10px 12px;
+    background:var(--pn-bg);
+    border-top:1px solid var(--pn-border);
+    align-items:center;
+  }
+  .pn-bot-input input{
+    flex:1;
+    border:1px solid var(--pn-border);
+    border-radius:12px;
+    padding:10px 12px;
+    background:var(--pn-bg);
+    color:var(--pn-text);
+    outline:none;
+    font-family:var(--pn-font);
+  }
+  .pn-bot-input input:focus{
+    border-color: var(--pn-primary);
+    box-shadow: 0 0 0 3px rgba(205,171,53,.25);
+  }
+  .pn-send-btn{
+    background:var(--pn-primary);
+    color:var(--pn-text-on-primary);
+    border:0;
+    border-radius:12px;
+    padding:10px 14px;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+    transition:background .2s ease, transform .06s ease;
+    white-space:nowrap;
+  }
+  .pn-send-btn:hover{ background:var(--pn-primary-hover); }
+  .pn-send-btn:active{ transform:scale(.98); }
+
+  .pn-bot-msg{
+    margin:8px 0;
+    padding:10px 12px;
+    border-radius:12px;
+    max-width:85%;
+    line-height:1.6;
+    font-size:14.5px;
+  }
+  .pn-bot-user{
+    background:linear-gradient(to bottom right,
+      rgba(205,171,53,.18), rgba(205,171,53,.08));
+    color:#1c1c1c;
+    margin-left:auto;
+  }
+  .pn-bot-ai{
+    background:var(--pn-bg);
+    border:1px solid var(--pn-border);
+  }
+
+  /* حركات */
+  @keyframes pn-fade-slide{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @keyframes pn-underline{
+    from{ transform:scaleX(0); }
+    to{ transform:scaleX(1); }
+  }
+  @keyframes pn-gold-pulse{
+    0%{ box-shadow:0 0 0 0 rgba(205,171,53,.45); }
+    70%{ box-shadow:0 0 0 10px rgba(205,171,53,0); }
+    100%{ box-shadow:0 0 0 0 rgba(205,171,53,0); }
+  }
+
+  /* احترام تفضيل تقليل الحركة */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition:none !important; }
+    .pn-title::after{ transform:scaleX(1); }
+  }
+
+  @media (max-width: 576px){
+    .pn-bot-panel{ width: calc(100vw - 16px - 56px - var(--pn-gap)); }
+  }
+</style>
+</head>
+<body>
+
+<button class="pn-bot-btn" id="pnBotToggle" aria-label="فتح محادثة المساعد">💬</button>
+
+<div class="pn-bot-panel" id="pnBot" role="dialog" aria-label="محادثة المساعد">
+  <div class="pn-bot-header">
+    <span class="pn-title">مساعد اللجنة الوطنية</span>
+    <button id="pnBotClose" aria-label="إغلاق" style="
+      background:transparent;border:0;color:inherit;font-size:18px;cursor:pointer;">✕</button>
+  </div>
+  <div class="pn-bot-body" id="pnBotBody" dir="rtl"></div>
+  <div class="pn-bot-input">
+    <input id="pnBotText" placeholder="اكتب رسالتك…" />
+    <button id="pnBotSend" class="pn-send-btn" type="button">إرسال</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const panel = document.getElementById('pnBot');
+  const body  = document.getElementById('pnBotBody');
+  const btn   = document.getElementById('pnBotToggle');
+  const close = document.getElementById('pnBotClose');
+  const input = document.getElementById('pnBotText');
+  const send  = document.getElementById('pnBotSend');
+  const title = document.querySelector('.pn-title');
+  const history = []; // {user, assistant}
+
+  function getGap(){
+    const v = getComputedStyle(document.documentElement).getPropertyValue('--pn-gap').trim();
+    const n = parseInt(v, 10);
+    return Number.isFinite(n) ? n : 12;
+  }
+
+  function placePanelRightOfButton(){
+    const rect = btn.getBoundingClientRect();
+    const GAP = getGap();
+    const left = Math.round(rect.left + rect.width + GAP);
+    panel.style.left = left + 'px';
+    panel.style.right = 'auto';
+  }
+
+  function addMsg(text, who){
+    const div=document.createElement('div');
+    div.className='pn-bot-msg '+(who==='user'?'pn-bot-user':'pn-bot-ai');
+    div.textContent=text;
+    body.appendChild(div);
+    body.scrollTop=body.scrollHeight;
+  }
+
+  async function ask(){
+    const text=(input.value||'').trim(); if(!text) return;
+    addMsg(text,'user'); input.value=''; send.disabled=true;
+    try{
+      const r=await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({message:text, history})
+      });
+      const data=await r.json();
+      if(data.answer){
+        addMsg(data.answer,'ai');
+        history.push({user:text, assistant:data.answer});
+      }else{
+        addMsg('تعذّر الحصول على الرد.','ai');
+      }
+    }catch(e){
+      addMsg('حدث خطأ بالشبكة.','ai');
+    }
+    send.disabled=false; input.focus();
+  }
+
+  function openPanel(){
+    placePanelRightOfButton();
+    panel.style.display='flex';
+    panel.classList.add('is-open');
+    // لإعادة تشغيل حركة العنوان كل مرّة:
+    title.style.animation='none';
+    title.offsetHeight; // reflow
+    title.style.animation=null;
+    input.focus();
+  }
+  function closePanel(){
+    panel.style.display='none';
+    panel.classList.remove('is-open');
+  }
+
+  btn.onclick = ()=>{
+    if(panel.style.display==='flex'){ closePanel(); }
+    else{ openPanel(); }
+  };
+  close.onclick = closePanel;
+  send.onclick = ask;
+  input.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); ask(); }
+  });
+  window.addEventListener('resize', ()=>{
+    if(panel.style.display==='flex') placePanelRightOfButton();
+  });
+})();
+</script>
+
+</body>
+</html>

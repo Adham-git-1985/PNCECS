@@ -1,0 +1,41 @@
+/* تنسيقات مخصصة لإدارة الصور العلوية */
+
+.card-img-top {
+  max-height: 250px;
+  object-fit: cover;
+}
+
+.card-body .btn {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.card-body .btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.card-body .btn-warning {
+  color: #fff;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.form-label {
+  font-weight: bold;
+  color: #555;
+}
+
+textarea.form-control,
+input.form-control,
+select.form-select {
+  border-radius: 0.5rem;
+}

@@ -1,0 +1,203 @@
+{% extends "/en/layout.html" %}
+{% block title %}معرض الصور{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+<h1 class="page-title mt-4 text-primary text-center">📸 Gallery</h1>
+  <!-- نموذج البحث -->
+  <form method="GET" class="mb-4">
+    <div class="row g-2">
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+      </div>
+      <div class="col-md-9">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="🔍 Search in Images..."
+               value="{{ request.args.get('q', '') }}">
+      </div>
+
+    </div>
+  </form>
+
+  {% if images %}
+    <!-- شبكة Masonry بسيطة باستخدام CSS Columns -->
+    <div class="grid">
+      {% for image in images %}
+        <div class="grid-item">
+          <div class="card border-0 shadow-sm mb-3">
+            <!--
+              عند النقر على الصورة:
+              - يفتح المودال #galleryCarouselModal
+              - يمرّر data-index=loop.index0 إلى JS لتحديد الشريحة
+            -->
+            <a href="#"
+               class="gallery-thumb"
+               data-bs-toggle="modal"
+               data-bs-target="#galleryCarouselModal"
+               data-index="{{ loop.index0 }}">
+              <img src="{{ url_for('static', filename='images/gallery/' + image.filename) }}"
+                   class="img-fluid"
+                   style="object-fit: cover; height: 200px; width: 100%;"
+                   alt="{{ image.title or 'صورة' }}">
+            </a>
+            <div class="card-body p-2 text-center">
+              {% if image.title %}
+                <h6 class="card-title mb-1">{{ image.title }}</h6>
+              {% endif %}
+              {% if image.description %}
+                <p class="card-text text-muted small mb-0">{{ image.description }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- ترقيم الصفحات -->
+    {% if pagination.pages > 1 %}
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          {% if pagination.has_prev %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ pagination.prev_num }}{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}">
+                السابق
+              </a>
+            </li>
+          {% endif %}
+          {% for p in range(1, pagination.pages + 1) %}
+            <li class="page-item {% if p == pagination.page %}active{% endif %}">
+              <a class="page-link"
+                 href="?page={{ p }}{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}">
+                {{ p }}
+              </a>
+            </li>
+          {% endfor %}
+          {% if pagination.has_next %}
+            <li class="page-item">
+              <a class="page-link"
+                 href="?page={{ pagination.next_num }}{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}">
+                التالي
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="text-center text-muted">لا توجد صور لعرضها.</p>
+  {% endif %}
+</div>
+
+<!-- مودال Carousel لعرض الصور كاملة -->
+{% if images %}
+  <div class="modal fade" id="galleryCarouselModal" tabindex="-1" aria-labelledby="galleryCarouselLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content bg-dark">
+        <div class="modal-header border-0">
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div id="galleryCarousel" class="carousel slide" data-bs-ride="false">
+            <div class="carousel-inner">
+              {% for image in images %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                  <img src="{{ url_for('static', filename='images/gallery/' + image.filename) }}"
+                       class="d-block mx-auto img-fluid"
+                       style="max-height: 80vh;"
+                       alt="{{ image.title or 'صورة' }}">
+                  {% if image.title or image.description %}
+                    <div class="carousel-caption d-none d-md-block bg-black bg-opacity-50 rounded p-3">
+                      {% if image.title %}
+                        <h5>{{ image.title }}</h5>
+                      {% endif %}
+                      {% if image.description %}
+                        <p class="small">{{ image.description }}</p>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            <!-- أزرار التنقل -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">السابق</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">التالي</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <style>
+    /* ---------- CSS شبكة Masonry باستخدام CSS Columns ---------- */
+    .grid {
+      column-count: 4;
+      column-gap: 1rem;
+    }
+    @media (max-width: 992px) {
+      .grid {
+        column-count: 3;
+      }
+    }
+    @media (max-width: 768px) {
+      .grid {
+        column-count: 2;
+      }
+    }
+    @media (max-width: 576px) {
+      .grid {
+        column-count: 1;
+      }
+    }
+
+    .grid-item {
+      break-inside: avoid;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+    .grid-item:hover {
+      transform: translateY(-4px) scale(1.02);
+    }
+    .card {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    /* صورة البطاقة */
+    .card img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    /* تعليق البطاقة */
+    .card-body {
+      background: #f9f9f9;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // عندما يُعرض المودال، ننتقل إلى الشريحة المناسبة
+      var galleryModal = document.getElementById('galleryCarouselModal');
+      galleryModal.addEventListener('show.bs.modal', function (event) {
+        // العنصر الذي فَعّل (click) كان <a class="gallery-thumb">...
+        var thumb = event.relatedTarget;
+        var index = parseInt(thumb.getAttribute('data-index'), 10);
+        var carousel = bootstrap.Carousel.getOrCreateInstance(document.getElementById('galleryCarousel'));
+        carousel.to(index);
+      });
+    });
+  </script>
+{% endblock %}

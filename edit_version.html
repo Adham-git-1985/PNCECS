@@ -1,0 +1,27 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">تعديل الإصدار</h2>
+    <form method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">العنوان</label>
+            <input type="text" name="title" class="form-control" value="{{ version.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">الفئة</label>
+            <input type="text" name="category" class="form-control" value="{{ version.category }}" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">تغيير ملف PDF (اختياري)</label>
+            <input type="file" name="file" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">تغيير الصورة المصغرة (اختياري)</label>
+            <input type="file" name="thumbnail" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-success">حفظ التعديلات</button>
+        <a href="{{ url_for('admin_versions') }}" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>
+{% endblock %}

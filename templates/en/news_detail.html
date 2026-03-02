@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block title %}News Details{% endblock %}
+
+{% block content %}
+
+    <h2 class="text-primary mb-4 text-center fs-2">{{ news.title }}</h2>
+
+    <!-- عرض الصور المصغَّرة في منتصف الصفحة -->
+    {% if images %}
+      <div class="text-center mt-5 mb-3">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#newsImagesModal">
+          <img src="{{ url_for('static', filename='images/gallery/' + images[0].filename) }}"
+               class="img-fluid rounded"
+               style="max-width: 600px;"
+               alt="{{ images[0].title or 'صورة مرفقة' }}">
+        </a>
+        <p class="small mt-2">اضغط على الصورة لعرض كافة الصور</p>
+      </div>
+    {% else %}
+      <p class="text-muted">لا توجد صور مرفقة مع هذا الخبر.</p>
+    {% endif %}
+  </div>
+
+  {% if images %}
+    <div class="modal fade" id="newsImagesModal" tabindex="-1" aria-labelledby="newsImagesModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newsImagesModalLabel">صور الخبر</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+          </div>
+          <div class="modal-body">
+            <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                {% for image in images %}
+                  <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='images/gallery/' + image.filename) }}"
+                         class="d-block mx-auto img-fluid"
+                         style="max-height: 600px;"
+                         alt="{{ image.title or 'صورة الخبر' }}">
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                      {% if image.title %}
+                        <h6>{{ image.title }}</h6>
+                      {% endif %}
+                      {% if image.description %}
+                        <p class="small">{{ image.description }}</p>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <!-- أزرار التحكم في الكارسول -->
+              <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">السابق</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">التالي</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  {% endif %}
+
+
+    <div class="container py-4 fs-5">
+  <p class="text-muted "  >{{ news.created_at.strftime('%Y-%m-%d') }}</p>
+  {{ news.content | nl2br | urlize | safe }}
+</div>
+
+    {% if news.link %}
+      <p>
+        <a href="{{ news.link }}"
+           class="btn btn-outline-secondary"
+           target="_blank"
+           rel="noopener noreferrer">
+          رابط المصدر
+        </a>
+      </p>
+    {% endif %}
+  </div>
+{% endblock %}

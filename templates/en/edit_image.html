@@ -1,0 +1,46 @@
+
+{% extends "layout.html" %}
+{% block title %}تعديل صورة{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 700px;">
+    <h2 class="mb-4 text-center">✏️ تعديل الصورة</h2>
+
+    <!-- رسائل الفلاش -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" class="border p-4 bg-light rounded">
+        <div class="mb-3 text-center">
+            <a href="{{ url_for('static', filename='images/gallery/' + image.filename) }}" data-lightbox="preview" data-title="{{ image.title }}">
+                <img src="{{ url_for('static', filename='images/gallery/' + image.filename) }}" class="img-fluid rounded" style="max-height: 300px;" alt="{{ image.title }}">
+            </a>
+        </div>
+
+        <div class="mb-3">
+            <label for="title" class="form-label">عنوان الصورة</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ image.title }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">وصف الصورة</label>
+            <textarea class="form-control" id="description" name="description" rows="3">{{ image.description }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="new_image" class="form-label">استبدال الصورة (اختياري)</label>
+            <input type="file" class="form-control" id="new_image" name="new_image" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">💾 حفظ التعديلات</button>
+    </form>
+</div>
+{% endblock %}

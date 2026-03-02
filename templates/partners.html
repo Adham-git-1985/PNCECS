@@ -1,0 +1,173 @@
+{% extends "layout.html" %}
+{% block title %}{{ t('partners_title') }} - {{ t('site_name') }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <h2 class="mb-4 text-primary text-center">
+    🤝 {{ t('partners_title') }}
+  </h2>
+
+  <!-- اليونسكو -->
+  <section class="mb-5">
+    <h3 class="mb-3">{{ pick('اليونسكو', 'UNESCO') }}</h3>
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/unesco-logo-new.jpg') }}" alt="UNESCO" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>
+          {{ pick(
+            'المنظمة الدولية للتربية والثقافة والعلوم<br>تأسست اليونسكو يوم <strong>16 نوفمبر 1945</strong> بهدف تحقيق السلام والأمن في العالم من خلال التربية والعلم والثقافة والاتصال، وقد جاء في ميثاقها التأسيسي:',
+            'United Nations Educational, Scientific and Cultural Organization (UNESCO).<br>Established on <strong>16 November 1945</strong> to promote peace and security through education, science, culture and communication. Its Constitution states:'
+          )|safe }}
+        </p>
+        <blockquote class="blockquote">
+          <p class="mb-0">
+            {{ pick(
+              '«لما كانت الحروب تتولد في عقول البشر، ففي عقولهم يجب أن تُبنى حصون السلام.»',
+              '"Since wars begin in the minds of men, it is in the minds of men that the defenses of peace must be constructed."'
+            ) }}
+          </p>
+        </blockquote>
+        <p>
+          <a href="https://www.unesco.org" target="_blank" rel="noopener noreferrer" >
+            {{ pick('للتفاصيل:', 'Details:') }} www.unesco.org
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- الإيسيسكو -->
+  <section class="mb-5">
+    <h3 class="mb-3">{{ pick('الإيسيسكو', 'ICESCO') }}</h3>
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/ICESCO-NewLogo-223x300.jpg') }}" alt="ICESCO" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>
+          {{ pick(
+            'منظمة العالم الإسلامي للتربية والعلوم والثقافة.<br>تأسست عام 1981 إيمانًا بما يمثله الإسلام من «منهج حياة وقوة روحية وإنسانية وأخلاقية» في تكوين العالم الإسلامي وتقدّم الحضارة الإنسانية.',
+            'Islamic World Educational, Scientific and Cultural Organization (ICESCO).<br>Established in 1981, recognizing Islam as a “way of life and a moral, spiritual and human force” shaping the Islamic world and contributing to human civilization.'
+          )|safe }}
+        </p>
+        <p>
+          <a href="https://www.icesco.org" target="_blank" rel="noopener">
+            {{ pick('للتفاصيل:', 'Details:') }} https://www.icesco.org
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- الألكسو -->
+  <section class="mb-5">
+    <h3 class="mb-3">{{ pick('الألكسو', 'ALECSO') }}</h3>
+    <div class="row align-items-start mb-4">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/LOGO-SEUL.jpg') }}" alt="ALECSO" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>
+          {{ pick(
+            'المنظمة العربية للتربية والثقافة والعلوم.<br>نصّت المادة الأولى من أهداف المنظمة (أُنشئت عام 1970 في إطار جامعة الدول العربية):',
+            'Arab League Educational, Cultural and Scientific Organization (ALECSO).<br>Article I of its objectives (founded in 1970 within the Arab League framework) states:'
+          )|safe }}
+        </p>
+        <blockquote class="blockquote">
+          <p class="mb-0">
+            {{ pick(
+              '«التمكين للوحدة الفكرية بين أجزاء الوطن العربي ورفع المستوى الثقافي عن طريق التربية والثقافة والعلوم.»',
+              '“To strengthen intellectual unity across the Arab world and raise cultural standards through education, culture and science.”'
+            ) }}
+          </p>
+        </blockquote>
+
+        <ul class="list-unstyled mt-3">
+          <li>
+            <a href="{{ url_for('static', filename='forms/alecso_TAARIF.pdf') }}" target="_blank" rel="noopener">
+              {{ pick('التعريف بالمنظمة العربية للتربية والثقافة والعلوم', 'Introduction to ALECSO (Arabic)') }}
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('static', filename='forms/alecso_ahdaf.pdf') }}" target="_blank" rel="noopener">
+              {{ pick('أهداف المنظمة العربية للتربية والثقافة والعلوم', 'ALECSO Objectives (Arabic)') }}
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('static', filename='forms/alecso-dalil-taarifi.pdf') }}" target="_blank" rel="noopener">
+              {{ pick('الدليل التعريفي للمنظمة العربية للتربية والثقافة والعلوم', 'ALECSO Introductory Guide (Arabic)') }}
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('static', filename='forms/alecso-STRATIGIA-1.pdf') }}" target="_blank" rel="noopener">
+              {{ pick('الخطة الاستراتيجية للمنظمة 2017-2022', 'ALECSO Strategic Plan 2017–2022 (Arabic)') }}
+            </a>
+          </li>
+        </ul>
+
+        <p class="mt-3">
+          <a href="http://www.alecso.org.tn" target="_blank" rel="noopener">
+            {{ pick('للتفاصيل:', 'Details:') }} www.alecso.org.tn
+          </a>
+        </p>
+
+        <p>
+          <a href="{{ url_for('static', filename='forms/alesco-bayan.pdf') }}" target="_blank" rel="noopener">
+            {{ pick('بيان الألكسو بمناسبة مرور ثماني وأربعين سنة على الإعلان الرسمي لتأسيسها', 'ALECSO statement on the 48th anniversary of its official establishment (Arabic)') }}
+          </a>
+        </p>
+        <p>
+          <a href="{{ url_for('static', filename='forms/alecso-bayan-8-1-2019.pdf') }}" target="_blank" rel="noopener">
+            {{ pick('بيان الألكسو بمناسبة اليوم العربي لمحو الأمية/القرائية 8 يناير 2019', 'ALECSO statement on Arab Literacy Day – 8 Jan 2019 (Arabic)') }}
+          </a>
+        </p>
+        <p>
+          <a href="{{ url_for('static', filename='forms/alecso-ahmed-yousef.pdf') }}" target="_blank" rel="noopener">
+            {{ pick('تجربة مضيئة في العمل العربي المشترك', 'A Notable Experience in Joint Arab Work (Arabic)') }}
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div class="ratio ratio-16x9">
+      <iframe src="https://www.youtube.com/embed/u_p_6DyisK8" title="{{ pick('فيديو الألكسو', 'ALECSO Video') }}" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- اتحاد مجالس البحث العلمي العربية -->
+  <section class="mb-5">
+    <h3 class="mb-3">{{ pick('اتحاد مجالس البحث العلمي العربية', 'Federation of Arab Scientific Research Councils (FASRC)') }}</h3>
+    <div class="row align-items-start mb-4">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/FASRC.png') }}" alt="FASRC" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>
+          {{ pick(
+            'اتحاد مجالس البحث العلمي العربية.<br>كانت المبادرة من مجلس البحث العلمي في جمهورية العراق باقتراح تأسيس «اتحاد مجالس البحث العلمي العربية».',
+            'Federation of Arab Scientific Research Councils (FASRC).<br>Proposed initially by the Scientific Research Council of Iraq to establish the “Federation of Arab Scientific Research Councils.”'
+          )|safe }}
+        </p>
+        <blockquote class="blockquote">
+          <p class="mb-0">«{{ pick('اتحاد مجالس البحث العلمي العربية', 'Federation of Arab Scientific Research Councils') }}»</p>
+        </blockquote>
+        <p>
+          {{ pick(
+            'جاء ذلك خلال اجتماع خبراء البحث العلمي العرب بالقاهرة (1–2/6/1975) لمتابعة تنفيذ توصيات المؤتمر الأول (بغداد 5–8/11/1973). لاقى المقترح ترحيبًا واسعًا، ثم عُقد الاجتماع التأسيسي ببغداد (26–29/5/1975) بمشاركة ثماني دول عربية.',
+            'This took place during the meeting of Arab scientific research experts in Cairo (1–2 June 1975) to follow up on recommendations of the first conference (Baghdad, 5–8 Nov 1973). The proposal was welcomed, and the founding meeting was later held in Baghdad (26–29 May 1975) with eight Arab countries participating.'
+          ) }}
+        </p>
+        <p class="mt-3">
+          <a href="https://fasrc.org" target="_blank" rel="noopener">
+            {{ pick('للتفاصيل:', 'Details:') }} https://fasrc.org
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

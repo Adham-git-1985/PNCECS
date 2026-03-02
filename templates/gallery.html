@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% block title %}{{ 'Gallery' if session.get('lang','ar') == 'en' else 'معرض الصور' }}{% endblock %}
+
+{% block content %}
+{% set lang = session.get('lang', 'ar') %}
+{% macro tr(ar, en) -%}{{ en if lang == 'en' else ar }}{%- endmacro %}
+
+<div class="container my-5">
+  <h2 class="mb-4 text-center" style="color:#0d6efd">📷 {{ tr('معرض الصور', 'Gallery') }}</h2>
+
+  <!-- Controls row: search + sort + chips (categories) -->
+  <form method="GET" class="row g-2 align-items-center mb-3">
+    <div class="col-lg-6 col-md-7">
+      <input type="search" class="form-control" name="q"
+             placeholder="{{ tr('🔍 ابحث في الصور...', '🔍 Search images...') }}"
+             value="{{ request.args.get('q','') }}"
+             aria-label="{{ tr('ابحث في الصور', 'Search images') }}">
+    </div>
+
+    <div class="col-lg-3 col-md-5">
+      <select class="form-select" name="sort" onchange="this.form.submit()">
+        {% set s = request.args.get('sort','newest') %}
+        <option value="newest" {{ 'selected' if s=='newest' else '' }}>{{ tr('الأحدث أولاً', 'Newest first') }}</option>
+        <option value="oldest" {{ 'selected' if s=='oldest' else '' }}>{{ tr('الأقدم أولاً', 'Oldest first') }}</option>
+        <option value="az"     {{ 'selected' if s=='az'     else '' }}>{{ tr('أ-ي (عنوان)', 'A–Z (Title)') }}</option>
+        <option value="za"     {{ 'selected' if s=='za'     else '' }}>{{ tr('ي-أ (عنوان)', 'Z–A (Title)') }}</option>
+      </select>
+    </div>
+
+    <div class="col-lg-3 col-md-12">
+      <button class="btn btn-primary w-100" type="submit">{{ tr('تطبيق', 'Apply') }}</button>
+    </div>
+  </form>
+
+  {% if categories %}
+  <div class="d-flex flex-wrap gap-2 mb-4" role="group" aria-label="{{ tr('تصنيفات الصور', 'Image categories') }}">
+    <!-- "All" chip -->
+    {% set selected_cat = request.args.get('category') %}
+    <a class="chip {{ 'active' if not selected_cat else '' }}"
+       href="{{ request.path }}?{% if request.args.get('q') %}q={{ request.args.get('q') }}&{% endif %}{% if request.args.get('sort') %}sort={{ request.args.get('sort') }}&{% endif %}">{{ tr('الكل', 'All') }}</a>
+
+    {% for cat in categories %}
+      <a class="chip {{ 'active' if selected_cat == cat.slug else '' }}"
+         href="{{ request.path }}?{% if request.args.get('q') %}q={{ request.args.get('q') }}&{% endif %}{% if request.args.get('sort') %}sort={{ request.args.get('sort') }}&{% endif %}category={{ cat.slug }}">
+        {{ cat.name_en if (lang=='en' and cat.name_en) else cat.name }}
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if images %}
+  <div class="grid">
+    {% for image in images %}
+      {% set title = (image.title_en if lang=='en' and image.title_en else image.title) %}
+      {% set desc  = (image.description_en if lang=='en' and image.description_en else image.description) %}
+      {% set cat_name = (image.category.name_en if lang=='en' and image.category and image.category.name_en else (image.category.name if image.category else None)) %}
+
+      <div class="grid-item">
+        <a href="{{ url_for('static', filename='images/gallery/' + image.filename) }}"
+           data-lightbox="gallery"
+           data-title="{{ (title or '') ~ (' — ' ~ desc if desc) }}">
+          <img
+            src="{{ url_for('static', filename='images/gallery/' + image.filename) }}"
+            class="img-fluid rounded shadow-sm"
+            alt="{{ title or tr('صورة', 'Image') }}"
+            style="width:100%; height:auto;">
+        </a>
+
+        <div class="mt-2 small text-center">
+          {% if title %}<div class="fw-semibold">{{ title }}</div>{% endif %}
+          {% if cat_name %}<span class="badge bg-light text-dark border">{{ cat_name }}</span>{% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if pagination and pagination.pages > 1 %}
+  <nav class="mt-4" aria-label="{{ tr('ترقيم الصفحات', 'Pagination') }}">
+    <ul class="pagination justify-content-center">
+      {% if pagination.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ pagination.prev_num }}{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}{% if request.args.get('sort') %}&sort={{ request.args.get('sort') }}{% endif %}{% if request.args.get('category') %}&category={{ request.args.get('category') }}{% endif %}">{{ tr('السابق', 'Prev') }}</a>
+      </li>
+      {% endif %}
+
+      {% for p in range(1, pagination.pages + 1) %}
+      <li class="page-item {% if p == pagination.page %}active{% endif %}">
+        <a class="page-link" href="?page={{ p }}{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}{% if request.args.get('sort') %}&sort={{ request.args.get('sort') }}{% endif %}{% if request.args.get('category') %}&category={{ request.args.get('category') }}{% endif %}">{{ p }}</a>
+      </li>
+      {% endfor %}
+
+      {% if pagination.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ pagination.next_num }}{% if request.args.get('q') %}&q={{ request.args.get('q') }}{% endif %}{% if request.args.get('sort') %}&sort={{ request.args.get('sort') }}{% endif %}{% if request.args.get('category') %}&category={{ request.args.get('category') }}{% endif %}">{{ tr('التالي', 'Next') }}</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  {% else %}
+    <p class="text-center text-muted">{{ tr('لا توجد صور لعرضها.', 'No images to display.') }}</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ super() }}
+  <!-- Lightbox2 (assumes its CSS/JS are already included in base layout) -->
+  <style>
+    /* Chips */
+    .chip {
+      display: inline-block;
+      padding: .35rem .75rem;
+      border-radius: 999px;
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      text-decoration: none;
+      color: #333;
+      font-size: .9rem;
+    }
+    .chip:hover { background:#f5f5f5; }
+    .chip.active { background:#0d6efd; color:#fff; border-color:#0d6efd; }
+
+    /* Masonry via CSS columns */
+    .grid { column-count: 4; column-gap: 1rem; }
+    @media (max-width: 1200px) { .grid { column-count: 3; } }
+    @media (max-width: 768px)  { .grid { column-count: 2; } }
+    @media (max-width: 576px)  { .grid { column-count: 1; } }
+
+    .grid-item { break-inside: avoid; margin-bottom: 1rem; }
+  </style>
+{% endblock %}

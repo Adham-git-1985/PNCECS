@@ -1,0 +1,96 @@
+{% extends "/en/layout.html" %}
+{% block title %}Partners{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+       <h2 class="mb-4 text-primary text-center"> Partners</h2>
+
+  <!-- اليونسكو -->
+  <section class="mb-5">
+    <h3 class="mb-3">Unesco</h3>
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/unesco-logo-new.jpg') }}" alt="UNESCO" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>المنظمة الدولية للتربية والثقافة والعلوم<br>
+        تأسست اليونسكو يوم <strong>16 نوفمبر 1945</strong> بهدف تحقيق السلام والأمن في العالم من خلال التربية والعلم والثقافة والاتصال، وقد جاء في ميثاقها التأسيسي:</p>
+        <blockquote class="blockquote">
+          <p class="mb-0">“لما كانت الحروب تتولد في عقول البشر، ففي عقولهم يجب أن تبنى حصون السلام.”</p>
+        </blockquote>
+        <p><a href="https://www.unesco.org" target="_blank">للتفاصيل: www.unesco.org</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- الإيسيسكو -->
+  <section class="mb-5">
+    <h3 class="mb-3">ISESCO</h3>
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/ICESCO-NewLogo-223x300.jpg') }}" alt="ICESCO" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>منظمة العالم الإسلامي للتربية والعلوم والثقافة<br>
+        تأسست عام 1981 إيماناً في دول العالم الإسلامي بما يمثله الإسلام من “منهج الحياة وقوة روحية وإنسانية وأخلاقية في تكوين العالم الإسلامي وتقدم الحضارة الإنسانية”.</p>
+        <p><a href="https://www.icesco.org" target="_blank">للتفاصيل: https://www.icesco.org</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- الألكسو -->
+  <section class="mb-5">
+    <h3 class="mb-3">ALECSO</h3>
+    <div class="row align-items-start mb-4">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/LOGO-SEUL.jpg') }}" alt="ALECSO" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>المنظمة العربية للتربية والثقافة والعلوم<br>
+        نصت المادة الأولى من أهداف المنظمة التي أنشئت في إطار جامعة الدول العربية عام 1970:</p>
+        <blockquote class="blockquote">
+          <p class="mb-0">“التمكين للوحدة الفكرية بين أجزاء الوطن العربي ورفع المستوى الثقافي عن طريق التربية والثقافة والعلوم.”</p>
+        </blockquote>
+        <ul class="list-unstyled mt-3">
+         <li><a href="{{ url_for('static', filename='forms/alecso_TAARIF.pdf') }}" target="_blank">التعريف بالمنظمة العربية للتربية والثقافة والعلوم</a></li>
+           <li><a href="{{ url_for('static', filename='forms/alecso_ahdaf.pdf') }}" target="_blank">أهداف المنظمة العربية للتربية والثقافة والعلوم</a></li>
+           <li><a href="{{ url_for('static', filename='forms/alecso-dalil-taarifi.pdf') }}" target="_blank">الدليل التعريفي للمنظمة العربية للتربية والثقافة والعلوم</a></li>
+           <li><a href="{{ url_for('static', filename='forms/alecso-STRATIGIA-1.pdf') }}" target="_blank">الخطة الاستراتيجية للمنظمة 2017-2022</a></li>
+        </ul>
+        <p class="mt-3"><a href="http://www.alecso.org.tn" target="_blank">للتفاصيل: www.alecso.org.tn</a></p>
+        <p><a href="{{ url_for('static', filename='forms/alesco-bayan.pdf') }}" target="_blank">بيان الألكسو بمناسبة مرور ثماني وأربعين سنة على الإعلان الرسمي لتأسيسها</a></p>
+        <p><a href="{{ url_for('static', filename='forms/alecso-bayan-8-1-2019.pdf') }}" target="_blank">بيان الألكسو بمناسبة اليوم العربي لمحو الأمية/القرائية 8 يناير 2019</a></p>
+        <p><a href="{{ url_for('static', filename='forms/alecso-ahmed-yousef.pdf') }}" target="_blank"> تجربة مضيئة في العمل العربي المشترك </a></p>
+
+      </div>
+    </div>
+    <div class="ratio ratio-16x9">
+      <iframe src="https://www.youtube.com/embed/u_p_6DyisK8" title="ALECSO Video" allowfullscreen></iframe>
+    </div>
+  </section>
+
+   <!-- الألكسو -->
+  <section class="mb-5">
+    <h3 class="mb-3">Federation of Arab Scientific Research</h3>
+    <div class="row align-items-start mb-4">
+      <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='images/FASRC.png') }}" alt="FASRC" class="img-fluid mb-3">
+      </div>
+      <div class="col-md-9">
+        <p>اتحاد مجالس البحث العلمي العربية<br>
+        كانت المبادرة من مؤسسة البحث العلمي في جمهورية العراق (مجلس البحث العلمي)، إذ تقدمت باقتراح لتأسيس</p>
+        <blockquote class="blockquote">
+          <p class="mb-0">” Federation of Arab Scientific Research ”</p>
+        </blockquote>
+        <p>
+          أثناء اجتماع خبراء البحث العلمي العرب الذي عقد بالقاهرة في الفترة 1- 2 /6/ 1975 لمتابعة تنفيذ توصيات المؤتمر الأول للوزراء العرب المسئولين عن البحث العلمي ورؤساء المجالس العلمية في الدول العربية (بغداد 5 – 8 /11/ 1973)، ولقد لقي هذا المقترح ترحيباً وتأييداً من قبل المجتمعين. ثم دعى مجلس البحث العلمي بالعراق لعقد الاجتماع التأسيسي ببغداد في الفترة 26 – 29 /5/ 1975 والذي شاركت فيه ثمانية دول عربية.
+        </p>
+        <p class="mt-3"><a href="https://fasrc.org" target="_blank">للتفاصيل: https://fasrc.org</a></p>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

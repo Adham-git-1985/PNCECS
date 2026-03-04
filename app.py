@@ -45,7 +45,6 @@ app = Flask(__name__)
 
 CANONICAL_HOST = os.getenv("CANONICAL_HOST")  # مثال: "pncecs.ps"
 
-
 def is_safe_url(target: str) -> bool:
     if not target:
         return False
@@ -75,13 +74,11 @@ def is_safe_url(target: str) -> bool:
 
     return True
 
-
 def redirect_back(default_endpoint: str = "index"):
     target = session.get("return_to")
     if target and is_safe_url(target):
         return redirect(target)
     return redirect(url_for(default_endpoint))
-
 
 @app.before_request
 def remember_return_to():
@@ -90,10 +87,10 @@ def remember_return_to():
         return
 
     # تجاهل static ومسارات تغيير اللغة نفسها
-    if request.endpoint in ("static", "set_lang", "set_lang_route"):
+    if request.endpoint in ("static", "set_lang", "set_lang_route", "switch_lang"):
         return
 
-    target = request.full_path
+    target = request.path or "/"
     if target.endswith("?"):
         target = target[:-1]
 
@@ -262,11 +259,7 @@ TRANSLATIONS = {
 
 
 
-
-
-# Ensure .env is loaded from the project directory (important under IIS/Services where CWD may differ)
-_ENV_BASEDIR = Path(__file__).resolve().parent
-load_dotenv(_ENV_BASEDIR / '.env')
+load_dotenv()  # Load environment variables from .env
 
 CORS(app)
 # make Flask trust IIS/ARR's X-Forwarded-* headers
@@ -274,32 +267,37 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 #app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 
-
 from flask import g, session, redirect, request, url_for
 
-
 # إعداد البريد
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'pncecs.info@gmail.com'
-#app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', '')
+# ملاحظة: الأفضل أمنيًا وضع MAIL_PASSWORD كـ Environment Variable (NSSM) بدل الكود،
+# لكن عند عدم وجوده سيتم استخدام القيمة الافتراضية أدناه.
+DEFAULT_MAIL_USERNAME = "pncecs.info@gmail.com"
+DEFAULT_MAIL_PASSWORD = "lfohzconbimzgxvd"  # ضع هنا Gmail App Password (16 حرف) بدل XYZ
 
-app.config['MAIL_PASSWORD'] = 'bexzquynkjxgmbyp'
+MAIL_USERNAME = os.environ.get("MAIL_USERNAME") or DEFAULT_MAIL_USERNAME
+MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD") or DEFAULT_MAIL_PASSWORD
 
-
-
-# If empty, mail sending will fail (common when .env isn't loaded in production)
-if not app.config['MAIL_PASSWORD']:
-    print("⚠️ MAIL_PASSWORD is empty. Ensure it is set in .env or as an environment variable.")
-app.config['MAIL_DEFAULT_SENDER'] = 'pncecs.info@gmail.com'
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USE_SSL"] = False
+app.config["MAIL_USERNAME"] = "pncecs.info@gmail.com"
+app.config["MAIL_PASSWORD"] = 'lfohzconbimzgxvd'
+app.config["MAIL_DEFAULT_SENDER"] = "pncecs.info@gmail.com"
 
 # تهيئة mail وربطه بالتطبيق
 mail = Mail(app)
-
 basedir = Path(__file__).resolve().parent
 app.secret_key = os.environ.get('SECRET_KEY', 'fallback_secret')
+# --- Session hardening / WAF false-positive mitigation ---
+# Change cookie name to avoid ModSecurity false positives on Cookie(session)
+app.config["SESSION_COOKIE_NAME"] = os.environ.get("SESSION_COOKIE_NAME", "pncecs_session")
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = os.environ.get("SESSION_COOKIE_SAMESITE", "Lax")
+# Only enable Secure cookies when running behind HTTPS (set env var on server)
+app.config["SESSION_COOKIE_SECURE"] = (os.environ.get("SESSION_COOKIE_SECURE", "0") == "1")
+
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'instance', 'news.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
@@ -315,13 +313,11 @@ app.config['THUMBNAIL_FOLDER'] = os.path.join('static', 'images', 'thumbnails')
 #logging.info('adham line 38: '+ os.path.join('static', 'images', 'thumbnails'))
 
 
-
 # تأكد من أن مجلد الصور المصغرة موجود
 os.makedirs(app.config['THUMBNAIL_FOLDER'], exist_ok=True)
 #os.makedirs(app.config['PDF_UPLOAD_FOLDER'], exist_ok=True)  # هذا سيجعل المجلد موجودًا إذا لم يكن موجودًا
 
 from openai import OpenAI, RateLimitError, APIError, APITimeoutError, AuthenticationError, BadRequestError
-
 
 def full_url(path: str) -> str:
     return urljoin(request.url_root, path.lstrip('/'))
@@ -504,7 +500,6 @@ def sitemap_xml():
     resp.headers['Cache-Control'] = 'public, max-age=3600'
     return resp
 
-
 def build_announcements_list():
     lang = session.get('lang', 'ar')
     try:
@@ -528,7 +523,6 @@ def downgrade():
         batch_op.drop_column('description_en')
         batch_op.drop_column('title_en')
 
-
 @app.context_processor
 def inject_i18n_helpers():
     lang = session.get('lang', 'ar')
@@ -551,8 +545,7 @@ def inject_i18n_helpers():
         en_val = getattr(obj, f"{base_field}_en", None)
         return pick(ar_val, en_val)
 
-    return dict(lang=lang, t=t, pick=pick, l=l)
-
+    return dict(lang=lang, t=t, pick=pick, l=l, current_year=datetime.now(timezone.utc).year)
 
 
 @app.route("/set-lang/<lang>")
@@ -562,7 +555,10 @@ def set_lang(lang):
     session["lang"] = lang
     return redirect_back("index")
 
-
+# مسار لإسكات طلب Chrome الشائع على بعض الأجهزة (غير مرتبط فعليًا بواجهة الموقع)
+@app.route('/.well-known/appspecific/com.chrome.devtools.json')
+def chrome_devtools_json():
+    return app.response_class("{}", mimetype="application/json")
 
 
 
@@ -582,7 +578,6 @@ def auto_translate_to_en(text: str | None) -> str | None:
 def _slugify(s):
     return re.sub(r'[^a-zA-Z0-9_-]+', '-', s).strip('-')
 
-
 # تحميل إعدادات config
 try:
     with open('config.json', 'r', encoding='utf-8') as f:
@@ -590,8 +585,6 @@ try:
 except Exception as e:
     print(f"⚠️ فشل تحميل ملف config.json: {e}")
     config = {}
-
-
 
 
 
@@ -633,6 +626,11 @@ with app.app_context():
 @app.before_request
 def _set_lang():
     session.setdefault('lang', 'ar')
+
+    # إذا المستخدم على صفحات /en/* اعتبر اللغة EN تلقائيًا
+    if request.path.startswith('/en'):
+        session['lang'] = 'en'
+
     g.lang = session.get('lang', 'ar')
 
 @app.route('/set_lang/<lang>')
@@ -642,6 +640,49 @@ def set_lang_route(lang):
     session['lang'] = lang
     return redirect_back('index')
 
+# تبديل اللغة مع الرجوع لنفس الصفحة (مع دعم صفحات /en/*)
+def _route_exists(path: str) -> bool:
+    try:
+        adapter = app.url_map.bind(request.host, url_scheme=request.scheme)
+        adapter.match(path, method='GET')
+        return True
+    except Exception:
+        return False
+
+@app.route('/switch_lang/<lang>')
+def switch_lang(lang):
+    if lang not in ('ar', 'en'):
+        lang = 'ar'
+
+    session['lang'] = lang
+
+    next_url = request.args.get('next') or session.get('return_to') or url_for('index')
+    if not is_safe_url(next_url):
+        return redirect(url_for('index_en' if lang == 'en' else 'index'))
+
+    parsed = urlparse(next_url)
+    path = parsed.path or '/'
+    query = ('?' + parsed.query) if parsed.query else ''
+
+    if lang == 'en':
+        if path.startswith('/en'):
+            target = path
+        else:
+            target = '/en/' if path == '/' else '/en' + path
+        if not _route_exists(target):
+            # إن لم يوجد مسار مطابق، اذهب للرئيسية الإنجليزية كحل آمن
+            target = '/en/' if _route_exists('/en/') else '/'
+    else:
+        if path.startswith('/en'):
+            target = path[3:] or '/'
+            if not target.startswith('/'):
+                target = '/' + target
+        else:
+            target = path
+        if not _route_exists(target):
+            target = '/'
+
+    return redirect(target + query)
 
 
 def _apply_locale_to_top_images(items, lang):
@@ -658,7 +699,6 @@ def _apply_locale_to_top_images(items, lang):
                 it.news_title = it.news_title_en
             if getattr(it, 'news_content_en', None):
                 it.news_content = it.news_content_en
-
 
 
 def _apply_locale_to_news(records, lang):
@@ -679,12 +719,31 @@ def _apply_locale_to_news(records, lang):
                 n.content = n.content_en
     return records
 
+def _apply_locale_to_gallery(items, lang):
+    """يعدّل النسخ المؤقتة من صور المعرض لعرض الإنجليزية عند توافرها."""
+    if lang != 'en':
+        return items
+    if not items:
+        return items
+    for img in items:
+        if getattr(img, 'title_en', None):
+            try:
+                object.__setattr__(img, 'title', img.title_en)
+            except Exception:
+                img.title = img.title_en
+        if getattr(img, 'description_en', None):
+            try:
+                object.__setattr__(img, 'description', img.description_en)
+            except Exception:
+                img.description = img.description_en
+    return items
+
 @app.route('/')
 def index():
     session.setdefault('lang', 'ar')
     # جلب الأخبار من قاعدة البيانات
     try:
-        top_images = TopImage.query.order_by(TopImage.created_at.desc()).all()
+        top_images = TopImage.query.options(joinedload(TopImage.news)).order_by(TopImage.created_at.desc()).all()
     except Exception:
         top_images = []  # أمان إضافي لو حصلت مشكلة بالجدول
 
@@ -698,9 +757,6 @@ def index():
     with db.session.no_autoflush:
         for item in news_list:
             item.gallery = Gallery.query.filter_by(news_id=item.id).all()
-
-    # جلب الصور العلوية
-    top_images = TopImage.query.all()
     # جلب الإصدارات من قاعدة البيانات
     versions_basmat = Version.query.filter_by(category='مجلة بصمات').all()
     versions_papers = Version.query.filter_by(category='أوراق ودراسات').all()
@@ -708,7 +764,6 @@ def index():
     # استدعاء UTC كائن timezone-aware
     now = datetime.utcnow()
     #now = datetime.now(timezone.utc)
-
 
     return render_template("index.html",
                            news_list=news_list,
@@ -718,7 +773,6 @@ def index():
                            versions_basmat=versions_basmat,
                            versions_papers=versions_papers,
                            versions_marsad=versions_marsad, announcements_list=build_announcements_list())
-
 
 @app.template_filter('nl2br')
 def nl2br(s):
@@ -738,7 +792,6 @@ def login():
         else:
             flash("❌ فشل في تسجيل الدخول. تحقق من بياناتك.", "error")
     return render_template('login.html')
-
 
 from sqlalchemy import func
 from sqlalchemy.orm import joinedload
@@ -847,7 +900,6 @@ def logout():
     flash("✅ تم تسجيل الخروج.", "success")
     return redirect(url_for('login'))
 
-
 @app.route('/news')
 def news():
     query = request.args.get('q', '').strip()
@@ -904,7 +956,6 @@ def partners():
         partners_international=partners_international
     )
 
-
 @app.route('/reports')
 def reports_explorer():
     # 1) scan static/pdfs/reports for pdf files
@@ -941,7 +992,6 @@ def reports_explorer():
                            reports=reports,
                            years=years,
                            categories=categories)
-
 
 @app.route('/announcement/<int:id>')
 def announcement_detail(id):
@@ -1000,13 +1050,11 @@ def announcements_page():
     )
 
 
-
 # قائمة الإعلانات في لوحة التحكم
 @app.route('/admin/announcements')
 def admin_announcements():
     anns = Announcement.query.order_by(Announcement.created_at.desc()).all()
     return render_template('admin_announcements.html', announcements=anns)
-
 
 # إضافة إعلان جديد
 @app.route('/admin/announcements/add', methods=['GET', 'POST'])
@@ -1064,12 +1112,10 @@ def add_announcement():
     return render_template('admin_announcement_form.html', announcement=None)
 
 
-
 # تعديل إعلان موجود
 @app.route('/admin/announcements/edit/<int:id>', methods=['GET','POST'])
 def edit_announcement(id):
     ann = Announcement.query.get_or_404(id)
-
 
     if request.method == 'POST':
         # 1) حذف الصور المُعلّمة
@@ -1151,7 +1197,6 @@ def delete_announcement(id):
     flash('✅ تم حذف الإعلان!', 'success')
     return redirect(url_for('admin_announcements'))
 
-
 @app.route('/news/<news_id>')
 def news_detail(news_id):
     #news = News.query.get(news_id)
@@ -1164,16 +1209,25 @@ def news_detail(news_id):
     related_images = Gallery.query.filter_by(news_id=news.id).all()
     return render_template("news_detail.html", news=news, images=related_images)
 
-
 @app.route('/add_news', methods=['GET', 'POST'])
 def add_news():
+    # صفحة إدارة الأخبار (محمية)
+    if 'user_id' not in session:
+        flash("❌ يجب تسجيل الدخول للوصول إلى هذه الصفحة.", "error")
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         title = request.form.get('title')
         content = request.form.get('content')
         link = request.form.get('link')
+
+        # عناوين/أوصاف الصور (تنطبق على الصور الجديدة التي سترفعها الآن)
         gallery_title = request.form.get('gallery_title')
         gallery_description = request.form.get('gallery_description')
+        gallery_title_en = request.form.get('gallery_title_en') or None
+        gallery_description_en = request.form.get('gallery_description_en') or None
 
+        # ترجمة الخبر (اختياري)
         title_en = request.form.get('title_en') or None
         content_en = request.form.get('content_en') or None
 
@@ -1196,7 +1250,7 @@ def add_news():
 
             images = request.files.getlist('images')
             for img in images:
-                if img and allowed_file(img.filename):
+                if img and img.filename and allowed_file(img.filename):
                     filename = f"{uuid.uuid4().hex}_{secure_filename(img.filename)}"
                     save_dir = app.config['UPLOAD_FOLDER']
                     os.makedirs(save_dir, exist_ok=True)
@@ -1206,6 +1260,8 @@ def add_news():
                         filename=filename,
                         title=gallery_title,
                         description=gallery_description,
+                        title_en=gallery_title_en,
+                        description_en=gallery_description_en,
                         news_id=new_news.id,
                         uploaded_at=datetime.utcnow()
                     ))
@@ -1216,19 +1272,52 @@ def add_news():
             db.session.rollback()
             flash(f"❌ خطأ أثناء الحفظ: {e}", "error")
 
-        return redirect(url_for('admin'))
+        # ابقَ في صفحة إدارة الأخبار بعد الحفظ
+        return redirect(url_for('add_news'))
 
     # GET: إعداد البيانات لعرض النموذج
     page = request.args.get('page', 1, type=int)
-    per_page = 5  # <-- غيّر هذا الرقم لعدد الأخبار الذي تريده
-    news_pagination = News.query.order_by(News.created_at.desc()) \
-        .paginate(page=page, per_page=per_page, error_out=False)
+
+    # بحث/فلترة الأخبار (لتسهيل الوصول للأخبار القديمة)
+    q = (request.args.get('q') or '').strip()
+    scope = (request.args.get('scope') or 'all').strip().lower()   # all | custom | imported
+    per_page = request.args.get('per_page', 20, type=int)          # افتراضي 20 بدل 5
+
+    # حدود آمنة
+    if per_page < 5:
+        per_page = 5
+    if per_page > 100:
+        per_page = 100
+    if scope not in ('all', 'custom', 'imported'):
+        scope = 'all'
+
+    news_query = News.query
+
+    if scope == 'custom':
+        news_query = news_query.filter_by(is_custom=True)
+    elif scope == 'imported':
+        news_query = news_query.filter_by(is_custom=False)
+
+    if q:
+        like = f"%{q}%"
+        news_query = news_query.filter(or_(
+            News.title.ilike(like),
+            News.content.ilike(like),
+            News.title_en.ilike(like),
+            News.content_en.ilike(like),
+        ))
+
+    news_pagination = (news_query
+        .order_by(News.created_at.desc())
+        .paginate(page=page, per_page=per_page, error_out=False))
+
     news_items = news_pagination.items
 
-    # صورة المعرض نتركها كما هي
-    gallery_pagination = Gallery.query \
-        .order_by(Gallery.uploaded_at.desc()) \
-        .paginate(page=page, per_page=9, error_out=False)
+    # صور المعرض (للإدارة العامة)
+    gallery_pagination = (Gallery.query
+        .order_by(Gallery.uploaded_at.desc())
+        .paginate(page=page, per_page=9, error_out=False))
+
     images = gallery_pagination.items
 
     return render_template(
@@ -1236,7 +1325,10 @@ def add_news():
         news_items=news_items,
         news_pagination=news_pagination,
         images=images,
-        gallery_pagination=gallery_pagination
+        gallery_pagination=gallery_pagination,
+        q=q,
+        scope=scope,
+        per_page=per_page
     )
 
 
@@ -1251,7 +1343,6 @@ def update_news():
     except Exception as e:
         flash(f'حدث خطأ أثناء المعالجة: {e}', 'error')
     return redirect(url_for("news"))
-
 
 @app.route("/gallery")
 def gallery():
@@ -1370,12 +1461,10 @@ def add_version():
 
     return render_template('add_version.html')
 
-
 @app.route('/admin/versions')
 def admin_versions():
     versions = db.session.execute(db.select(Version).order_by(Version.created_at.desc())).scalars().all()
     return render_template('admin_versions.html', versions=versions)
-
 
 @app.route('/admin/versions/delete/<int:id>')
 def delete_version(id):
@@ -1409,22 +1498,16 @@ def send_feedback():
     """
 
     try:
-        # Send to the configured mailbox
-        recipient = app.config.get('MAIL_USERNAME') or 'pncecs.info@gmail.com'
-        reply_to = (email or '').strip()
-        if '@' not in reply_to:
-            reply_to = None
         msg = Message(subject=f"📝 {feedback_type} - رأي من الموقع",
-                      recipients=[recipient],
-                      body=full_message,
-                      reply_to=reply_to)
+                      recipients=['pncecs.info@gmail.com'],
+                      body=full_message)
         mail.send(msg)
         flash("✅ تم إرسال رسالتك بنجاح، شكرًا لمساهمتك!", "success")
     except Exception as e:
         flash("❌ حدث خطأ أثناء إرسال الرسالة. حاول لاحقًا.", "danger")
-        app.logger.exception("SMTP Error while sending feedback")
+        print("SMTP Error:", e)
+        traceback.print_exc()
     return redirect_back('index')
-
 
 @app.context_processor
 def inject_marquee_news():
@@ -1447,12 +1530,10 @@ def inject_marquee_news():
 
     return dict(news_marquee=items)
 
-
 @app.context_processor
 def inject_announcements():
     ann = Announcement.query.order_by(Announcement.created_at.desc()).all()
     return dict(announcements_list=ann)
-
 
 @app.route('/delete_image/<int:image_id>', methods=['POST'])
 def delete_image(image_id):
@@ -1461,35 +1542,47 @@ def delete_image(image_id):
         return redirect(url_for("login"))
     image = Gallery.query.get_or_404(image_id)
     try:
+        # حذف الملف من النظام (إن كان موجودًا)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
         db.session.delete(image)
         db.session.commit()
         flash("✅ تم حذف الصورة بنجاح", "success")
     except Exception as e:
         db.session.rollback()
         flash(f"❌ حدث خطأ أثناء الحذف: {e}", "error")
-    return redirect(url_for("gallery"))
-
+    next_url = request.args.get('next') or url_for('add_news')
+    if not is_safe_url(next_url):
+        next_url = url_for('add_news')
+    return redirect(next_url)
 
 @app.route('/edit_image/<int:image_id>', methods=['GET', 'POST'])
 def edit_image(image_id):
     if "user_id" not in session:
         flash("❌ لا تملك صلاحية لتعديل الصور.", "error")
         return redirect(url_for("login"))
+
     image = Gallery.query.get_or_404(image_id)
 
-    if request.method == "GET":
-        categories = Category.query.order_by(func.lower(func.coalesce(Category.name_en, Category.name))).all()
-        return render_template("edit_image.html", image=image, categories=categories)
+    # أين نعود بعد الحفظ/الإلغاء؟
+    next_url = request.args.get('next') or request.form.get('next') or url_for('add_news')
+    if not is_safe_url(next_url):
+        next_url = url_for('add_news')
 
-    if request.method == "POST":
-        image.title = request.form.get("title")
-        image.description = request.form.get("description")
-        image.title_en = request.form.get("title_en")
-        image.description_en = request.form.get("description_en")
-        category_id = request.form.get("category_id") or None
+    categories = Category.query.order_by(func.lower(func.coalesce(Category.name_en, Category.name))).all()
+
+    if request.method == 'POST':
+        image.title = request.form.get('title')
+        image.description = request.form.get('description')
+        image.title_en = request.form.get('title_en')
+        image.description_en = request.form.get('description_en')
+
+        category_id = request.form.get('category_id') or None
         image.category_id = int(category_id) if category_id else None
-        new_image = request.files.get("new_image")
 
+        new_image = request.files.get('new_image')
         if new_image and new_image.filename:
             filename = f"{uuid.uuid4().hex}_{secure_filename(new_image.filename)}"
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
@@ -1502,46 +1595,80 @@ def edit_image(image_id):
                 image.filename = filename
             except Exception as e:
                 flash(f"❌ خطأ أثناء رفع الصورة الجديدة: {e}", "error")
+
         try:
             db.session.commit()
             flash("✅ تم تعديل الصورة بنجاح", "success")
         except Exception as e:
             db.session.rollback()
             flash(f"❌ حدث خطأ أثناء التعديل: {e}", "error")
-        return redirect(url_for("gallery"))
-    return render_template("edit_image.html", image=image)
 
+        return redirect(next_url)
+
+    return render_template('edit_image.html', image=image, categories=categories, next_url=next_url)
 
 @app.route('/edit_news/<news_id>', methods=['GET', 'POST'])
 def edit_news(news_id):
     if 'user_id' not in session:
         flash("❌ لا تملك صلاحية للتعديل.", "error")
         return redirect(url_for('login'))
+
     news = News.query.get_or_404(news_id)
+
     if request.method == 'POST':
-        #news.title = request.form.get('title')
+        # --- تعديل بيانات الخبر ---
         news.title = request.form.get('title', news.title)
-        #news.content = request.form.get('content')
         news.content = request.form.get('content', news.content)
         news.link = request.form.get('link')
 
         title_en = request.form.get('title_en') or None
         content_en = request.form.get('content_en') or None
 
-        # تحديث الإنجليزي إن أُدخل
         if title_en is not None:
             news.title_en = title_en
         if content_en is not None:
             news.content_en = content_en
 
+        # --- إضافة صور جديدة لهذا الخبر (اختياري) ---
+        gallery_title = request.form.get('gallery_title')
+        gallery_description = request.form.get('gallery_description')
+        gallery_title_en = request.form.get('gallery_title_en') or None
+        gallery_description_en = request.form.get('gallery_description_en') or None
+
+        images = request.files.getlist('images')
         try:
+            for img in images:
+                if img and img.filename and allowed_file(img.filename):
+                    filename = f"{uuid.uuid4().hex}_{secure_filename(img.filename)}"
+                    save_dir = app.config['UPLOAD_FOLDER']
+                    os.makedirs(save_dir, exist_ok=True)
+                    img.save(os.path.join(save_dir, filename))
+
+                    db.session.add(Gallery(
+                        filename=filename,
+                        title=gallery_title,
+                        description=gallery_description,
+                        title_en=gallery_title_en,
+                        description_en=gallery_description_en,
+                        news_id=news.id,
+                        uploaded_at=datetime.utcnow()
+                    ))
+
             db.session.commit()
-            flash("✅ تم تعديل الخبر بنجاح", "success")
+            flash("✅ تم تعديل الخبر وحفظ الصور (إن وجدت) بنجاح", "success")
         except Exception as e:
             db.session.rollback()
             flash(f"❌ حدث خطأ أثناء التعديل: {e}", "error")
-        return redirect(url_for('admin'))
-    return render_template('edit_news.html', news=news)
+
+        return redirect(url_for('edit_news', news_id=news.id))
+
+    # GET: صور الخبر الحالية
+    news_images = (Gallery.query
+                   .filter_by(news_id=news.id)
+                   .order_by(Gallery.uploaded_at.desc(), Gallery.id.desc())
+                   .all())
+
+    return render_template('edit_news.html', news=news, news_images=news_images)
 
 
 @app.route('/delete_news/<news_id>', methods=['POST'])
@@ -1564,8 +1691,7 @@ def delete_news(news_id):
     except Exception as e:
         db.session.rollback()
         flash(f"❌ حدث خطأ أثناء الحذف: {e}", "error")
-    return redirect(url_for('admin'))
-
+    return redirect(url_for('add_news'))
 
 # إدارة الصور العلوية
 @app.route('/add_top_image', methods=['POST'])
@@ -1604,7 +1730,6 @@ def add_top_image():
         flash("❌ يرجى اختيار صورة", "error")
     return redirect(url_for('admin_top_images'))
 
-
 @app.route('/delete_top_image/<int:image_id>', methods=['POST'])
 def delete_top_image(image_id):
     if 'user_id' not in session:
@@ -1615,6 +1740,11 @@ def delete_top_image(image_id):
     image_path = os.path.join(app.config['TOP_IMAGES_FOLDER'], image.image)
 
     try:
+        # حذف الملف من النظام (إن كان موجودًا)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
         db.session.delete(image)
         db.session.commit()
 
@@ -1628,7 +1758,6 @@ def delete_top_image(image_id):
         flash(f"❌ حدث خطأ أثناء الحذف: {e}", "error")
 
     return redirect(url_for('admin_top_images'))
-
 
 
 @app.route('/edit_top_image/<int:image_id>', methods=['GET', 'POST'])
@@ -1648,6 +1777,20 @@ def edit_top_image(image_id):
         image.title_en = request.form.get('title_en', '').strip()
         image.caption_en = request.form.get('caption_en', '').strip()
         image.news_id = request.form.get('news_id') or None
+        image.news_title_en = request.form.get('news_title_en', '').strip()
+        image.news_content_en = request.form.get('news_content_en', '').strip()
+
+        if image.news_id:
+            n = db.session.get(News, image.news_id)
+            if n:
+                if not image.news_title:
+                    image.news_title = n.title or ''
+                if not image.news_content:
+                    image.news_content = n.content or ''
+                if not image.news_title_en:
+                    image.news_title_en = (n.title_en or '')
+                if not image.news_content_en:
+                    image.news_content_en = (n.content_en or '')
 
         new_image = request.files.get('new_image')
         if new_image and allowed_file(new_image.filename):
@@ -1681,7 +1824,6 @@ def edit_top_image(image_id):
 
 
 
-
 @app.route('/admin_top_images', methods=['GET', 'POST'])
 def admin_top_images():
     if 'user_id' not in session:
@@ -1698,6 +1840,9 @@ def admin_top_images():
         news_id = request.form.get('news_id') or None
         title_en = request.form.get('title_en')
         caption_en = request.form.get('caption_en')
+        description_en = request.form.get('description_en', '').strip()
+        news_title_en = request.form.get('news_title_en', '').strip()
+        news_content_en = request.form.get('news_content_en', '').strip()
 
         if not file or not allowed_file(file.filename):
             flash("❌ يرجى اختيار صورة صالحة.", "error")
@@ -1715,8 +1860,11 @@ def admin_top_images():
                 news_title=news_title,
                 news_content=news_content,
                 news_id=news_id,
-                title_en = title_en,
-                caption_en = caption_en,
+                title_en=title_en,
+                caption_en=caption_en,
+                description_en=description_en or None,
+                news_title_en=news_title_en or None,
+                news_content_en=news_content_en or None,
             )
 
             db.session.add(new_image)
@@ -1757,7 +1905,10 @@ def admin_top_images():
 def index_en():
     news_list = News.query.order_by(News.created_at.desc()).all()
     _apply_locale_to_news(news_list, 'en')
-    top_images = TopImage.query.all()
+    top_images = TopImage.query.options(joinedload(TopImage.news)).order_by(TopImage.created_at.desc()).all()
+    _apply_locale_to_top_images(top_images, 'en')
+    rel_news = [ti.news for ti in top_images if getattr(ti, 'news', None)]
+    _apply_locale_to_news(rel_news, 'en')
     versions_basmat  = Version.query.filter_by(category='مجلة بصمات').all()
     versions_papers  = Version.query.filter_by(category='أوراق ودراسات').all()
     versions_marsad  = Version.query.filter_by(category='مرصد الانتهاكات').all()
@@ -1772,11 +1923,9 @@ def index_en():
                            versions_papers=versions_papers,
                            versions_marsad=versions_marsad)
 
-
 @app.route('/en/about')
 def about_en():
     return render_template('en/about.html')
-
 
 @app.route('/en/project_form')
 def project_form_en():
@@ -1805,7 +1954,12 @@ def news_detail_en(news_id):
     if not news:
         flash("❌ News not found.", "error")
         return redirect(url_for("news_en"))
+    # طبّق اللغة على الخبر (يعرض title_en/content_en داخل news.title/news.content مؤقتًا)
+    _apply_locale_to_news([news], 'en')
+
     images = Gallery.query.filter_by(news_id=news.id).all()
+    _apply_locale_to_gallery(images, 'en')
+
     return render_template("en/news_detail.html", news=news, images=images)
 
 @app.route('/en/partners')
@@ -1852,6 +2006,11 @@ def reports_explorer_en():
 @app.route('/en/announcement/<int:id>')
 def announcement_detail_en(id):
     ann = Announcement.query.get_or_404(id)
+    # طبّق اللغة على الإعلان
+    if getattr(ann, 'title_en', None):
+        ann.title = ann.title_en
+    if getattr(ann, 'content_en', None):
+        ann.content = ann.content_en
     return render_template('en/announcement_detail.html', announcement=ann)
 
 @app.route('/en/announcements_page')
@@ -1921,21 +2080,25 @@ def gallery_en():
     per_page = 50
     base_query = Gallery.query
     if query:
-        base_query = base_query.filter(
-            Gallery.title.ilike(f'%{query}%') | Gallery.description.ilike(f'%{query}%')
-        )
+        like = f'%{query}%'
+        base_query = base_query.filter(or_(
+            Gallery.title_en.ilike(like),
+            Gallery.description_en.ilike(like),
+            Gallery.title.ilike(like),
+            Gallery.description.ilike(like),
+        ))
     if sort_by == 'uploaded_at_asc':
         base_query = base_query.order_by(Gallery.uploaded_at.asc())
     elif sort_by == 'title_asc':
-        base_query = base_query.order_by(Gallery.title.asc())
+        base_query = base_query.order_by(func.coalesce(Gallery.title_en, Gallery.title).asc())
     elif sort_by == 'title_desc':
-        base_query = base_query.order_by(Gallery.title.desc())
+        base_query = base_query.order_by(func.coalesce(Gallery.title_en, Gallery.title).desc())
     else:
         base_query = base_query.order_by(Gallery.uploaded_at.desc())
     pagination = base_query.paginate(page=page, per_page=per_page)
     images = pagination.items
+    _apply_locale_to_gallery(images, 'en')
     return render_template("en/gallery.html", images=images, pagination=pagination)
-
 
 @app.route("/cultural_forum")
 def cultural_forum():
@@ -1945,8 +2108,6 @@ def cultural_forum():
         posts = json.load(f)
     posts = sorted(posts, key=lambda x: x.get("date", ""), reverse=True)
     return render_template("cultural_forum.html", posts=posts, lang=lang)
-
-
 
 
 
@@ -1970,7 +2131,6 @@ def download_cultural_forum_images():
         download_name="cultural_forum_images.zip",
         mimetype="application/zip"
     )
-
 
 
 
@@ -2075,7 +2235,6 @@ def api_chat():
         print("OpenAI error:", e)
         return jsonify({"error": "llm_error"}), 500
 
-
 @app.errorhandler(413)
 def request_entity_too_large(error):
     flash('❌ الملف الذي تحاول رفعه كبير جداً. يرجى اختيار ملف أصغر.', 'error')
@@ -2103,7 +2262,6 @@ def admin_fill_en_ann():
         flash(f"❌ خطأ: {e}", "error")
     return redirect(url_for("announcements_page"))
 
-
 @app.route("/admin/tools/fill_en_once", methods=["POST"])
 def admin_fill_en_once():
     if 'user_id' not in session:
@@ -2127,7 +2285,6 @@ def make_shell_context():
     return dict(db=db, Category=Category, Gallery=Gallery)
 
 
-
 #if __name__ == '__main__':
  #   app.run(debug=False, host='0.0.0.0', port=8000)
   #  app.run(debug=True)
@@ -2135,7 +2292,6 @@ def make_shell_context():
 if __name__ == "__main__":
     from waitress import serve
     serve(app, host="0.0.0.0", port=8000)
-
 
 #app.config.update(
 #    DEBUG=False,

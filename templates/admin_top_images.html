@@ -3,6 +3,8 @@
 {% block title %}إدارة الصور العلوية{% endblock %}
 {% block content %}
 <div class="container my-5">
+    {% include '_admin_nav.html' %}
+
   <div class="card shadow border-0 rounded p-4">
     <h2 class="text-center mb-4" style="color: #cdab35;">🖼️ إدارة الصور العلوية (Top Images)</h2>
 
@@ -48,6 +50,15 @@
             <label class="form-label">عنوان الصورة</label>
             <input type="text" name="title" class="form-control">
           </div>
+          <div class="col-md-6">
+            <label class="form-label">ربط بخبر (اختياري)</label>
+            <select name="news_id" class="form-select">
+              <option value="">بدون ارتباط بخبر</option>
+              {% for n in news %}
+                <option value="{{ n.id }}">{{ n.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
           <div class="col-md-12">
             <label class="form-label">الوصف</label>
             <textarea name="description" class="form-control" rows="2"></textarea>
@@ -78,6 +89,15 @@
                   <div class="col-md-12">
                     <label class="form-label text-muted">Description (English)</label>
                     <textarea name="description_en" class="form-control" rows="2" placeholder="Enter English description"></textarea>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label text-muted">Linked News Title (English)</label>
+                    <input type="text" name="news_title_en" class="form-control" placeholder="Optional (auto if linked)">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label text-muted">Linked News Content (English)</label>
+                    <textarea name="news_content_en" class="form-control" rows="2" placeholder="Optional (auto if linked)"></textarea>
                   </div>
                 </div>
               </div>

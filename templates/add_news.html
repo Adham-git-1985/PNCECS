@@ -4,6 +4,8 @@
 
 {% block content %}
 <div class="container my-5" style="max-width: 800px;">
+    {% include '_admin_nav.html' %}
+
     <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
 
     <!-- رسائل الفلاش -->
@@ -81,6 +83,36 @@
 
    <!-- عرض الأخبار -->
 <h4 class="mb-3">📰 الأخبار</h4>
+
+<form method="GET" class="row g-2 align-items-end mb-3">
+  <div class="col-12 col-md-6">
+    <label class="form-label">بحث داخل الأخبار</label>
+    <input type="text" name="q" value="{{ q or '' }}" class="form-control" placeholder="اكتب جزء من عنوان/محتوى الخبر...">
+  </div>
+
+  <div class="col-6 col-md-3">
+    <label class="form-label">النوع</label>
+    <select name="scope" class="form-select">
+      <option value="all" {% if scope=='all' %}selected{% endif %}>الكل</option>
+      <option value="custom" {% if scope=='custom' %}selected{% endif %}>المضافة يدويًا</option>
+      <option value="imported" {% if scope=='imported' %}selected{% endif %}>المنقولة / القديمة</option>
+    </select>
+  </div>
+
+  <div class="col-6 col-md-2">
+    <label class="form-label">بالصفحة</label>
+    <select name="per_page" class="form-select">
+      {% for n in [5,10,20,50,100] %}
+        <option value="{{ n }}" {% if per_page==n %}selected{% endif %}>{{ n }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-12 col-md-1 d-grid">
+    <button type="submit" class="btn btn-outline-primary">بحث</button>
+  </div>
+</form>
+
 <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
   {% for item in news_items %}
   <div class="col">
@@ -88,7 +120,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ item.title }}</h5>
         <p class="card-text text-muted small">
-          {{ item.created_at.strftime('%Y-%m-%d') }}
+          {{ item.created_at.strftime('%Y-%m-%d') if item.created_at else '' }}
         </p>
 
 
@@ -104,7 +136,8 @@
     </div>
   </div>
   {% endfor %}
-</div>
+</div>{% set here = request.full_path[:-1] if request.full_path.endswith('?') else request.full_path %}
+
 
 
     <!-- عرض الصور -->
@@ -120,8 +153,8 @@
                     {% if image.title %}<h6 class="card-title">{{ image.title }}</h6>{% endif %}
                     {% if image.description %}<p class="text-muted small">{{ image.description }}</p>{% endif %}
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('edit_image', image_id=image.id) }}" class="btn btn-sm btn-outline-secondary">✏️ تعديل</a>
-                        <form action="{{ url_for('delete_image', image_id=image.id) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الصورة؟');">
+                        <a href="{{ url_for('edit_image', image_id=image.id, next=here) }}" class="btn btn-sm btn-outline-secondary">✏️ تعديل</a>
+                        <form action="{{ url_for('delete_image', image_id=image.id, next=here) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الصورة؟');">
                             <button type="submit" class="btn btn-sm btn-outline-danger">🗑 حذف</button>
                         </form>
                     </div>
@@ -137,7 +170,7 @@
   <ul class="pagination justify-content-center">
     {% if news_pagination.has_prev %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ news_pagination.prev_num }}">السابق</a>
+      <a class="page-link" href="{{ url_for('add_news', page=news_pagination.prev_num, q=q, scope=scope, per_page=per_page) }}">السابق</a>
     </li>
     {% endif %}
 {# حساب نافذة الأرقام #}
@@ -150,7 +183,7 @@
 {# رابط الصفحة الأولى و«…» إن لزم الأمر #}
 {% if start > 1 %}
   <li class="page-item">
-    <a class="page-link" href="?page=1">1</a>
+    <a class="page-link" href="{{ url_for('add_news', page=1, q=q, scope=scope, per_page=per_page) }}">1</a>
   </li>
   {% if start > 2 %}
     <li class="page-item disabled"><span class="page-link">…</span></li>
@@ -160,7 +193,7 @@
 {# الأرقام المحصورة في النافذة #}
 {% for p in range(start, end+1) %}
   <li class="page-item {% if p == current %}active{% endif %}">
-    <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+    <a class="page-link" href="{{ url_for('add_news', page=p, q=q, scope=scope, per_page=per_page) }}">{{ p }}</a>
   </li>
 {% endfor %}
 
@@ -170,13 +203,13 @@
     <li class="page-item disabled"><span class="page-link">…</span></li>
   {% endif %}
   <li class="page-item">
-    <a class="page-link" href="?page={{ total }}">{{ total }}</a>
+    <a class="page-link" href="{{ url_for('add_news', page=total, q=q, scope=scope, per_page=per_page) }}">{{ total }}</a>
   </li>
 {% endif %}
 
     {% if news_pagination.has_next %}
     <li class="page-item">
-      <a class="page-link" href="?page={{ news_pagination.next_num }}">التالي</a>
+      <a class="page-link" href="{{ url_for('add_news', page=news_pagination.next_num, q=q, scope=scope, per_page=per_page) }}">التالي</a>
     </li>
     {% endif %}
   </ul>

@@ -4,6 +4,8 @@
 
 {% block content %}
 <div class="container my-5" style="max-width: 800px;">
+    {% include '_admin_nav.html' %}
+
     <h2 class="mb-4 text-center">🛠️ لوحة التحكم</h2>
 
     <!-- رسائل الفلاش -->
@@ -73,7 +75,8 @@
     </div>
   </div>
   {% endfor %}
-</div>
+</div>{% set here = request.full_path[:-1] if request.full_path.endswith('?') else request.full_path %}
+
 
 
     <!-- عرض الصور -->
@@ -89,8 +92,8 @@
                     {% if image.title %}<h6 class="card-title">{{ image.title }}</h6>{% endif %}
                     {% if image.description %}<p class="text-muted small">{{ image.description }}</p>{% endif %}
                     <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('edit_image', image_id=image.id) }}" class="btn btn-sm btn-outline-secondary">✏️ تعديل</a>
-                        <form action="{{ url_for('delete_image', image_id=image.id) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الصورة؟');">
+                        <a href="{{ url_for('edit_image', image_id=image.id, next=here) }}" class="btn btn-sm btn-outline-secondary">✏️ تعديل</a>
+                        <form action="{{ url_for('delete_image', image_id=image.id, next=here) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الصورة؟');">
                             <button type="submit" class="btn btn-sm btn-outline-danger">🗑 حذف</button>
                         </form>
                     </div>

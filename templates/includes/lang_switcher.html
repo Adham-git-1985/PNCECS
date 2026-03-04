@@ -1,0 +1,4 @@
+{# Language switcher: keeps you on SAME page #}
+{% set next_url = request.full_path if request.full_path else request.path %}
+<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('set_lang', lang='ar', next=next_url) }}">AR</a>
+<a class="btn btn-outline-secondary btn-sm" href="{{ url_for('set_lang', lang='en', next=next_url) }}">EN</a>

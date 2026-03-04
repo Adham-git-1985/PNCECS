@@ -3,6 +3,8 @@
 
 {% block content %}
 <div class="container my-5" style="max-width: 800px;">
+    {% include '_admin_nav.html' %}
+
 <h2 class="mb-4 text-primary text-center">🛠️ لوحة التحكم</h2>
 <!-- رسائل الفلاش -->
     {% with messages = get_flashed_messages(with_categories=true) %}

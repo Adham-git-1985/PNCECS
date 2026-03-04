@@ -2,22 +2,7 @@
 
 {% block title %}الرئيسية - اللجنة الوطنية{% endblock %}
 
-{% block announcements %}
-<div class="announcements-vertical">
-  <div class="announcements-header">announcements</div>
-  <ul class="announcements-vertical-list">
-    {% for ann in announcements_list %}
-  <li>
-    <a href="{{ url_for('announcement_detail', id=ann.id) }}">
-      {{ ann.title }}
-    </a>
-  </li>
-{% endfor %}
-
-  </ul>
-</div>
-{% endblock %}
-
+{% block announcements %}{% endblock %}
 
 {% block content %}
 
@@ -132,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="carousel-item-layout">
         <div style="border: 4px solid #cdab35; border-radius: 8px; overflow: hidden;" class="top-image-frame">
-          <img src="{{ url_for('static', filename='images/top_images/' + img.image) }}" class="img-fluid w-100" alt="{{ img.title or 'Image' }}" loading="lazy">
+          <img src="{{ url_for('static', filename='images/top_images/' + img.image) }}" class="img-fluid w-100" alt="{{ img.title_en or img.title or 'Image' }}" loading="lazy">
         </div>
         {% if img.created_at and img.created_at >= (now - timedelta(days=7)) %}
           <span class="top-image-badge">new</span>
@@ -140,21 +125,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
         <!-- Show the title on mobile too -->
         <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
-          {% if img.news_id %}
+          {% set caption = img.caption_en or img.title_en or img.description_en or img.description or 'news details' %}
+          {% if img.news_id and img.news %}
             <h4>
-              <a href="{{ url_for('news_detail', news_id=img.news_id) }}" rel="noopener noreferrer">
-                📌 {{ img.description or "news details" }}
+              <a href="{{ url_for('news_detail_en', news_id=img.news_id) }}" rel="noopener noreferrer">
+                📌 {{ img.news.title_en or img.news.title or caption }}
               </a>
             </h4>
-          {% elif img.news_title %}
+            <p class="mb-0 small text-white">{{ (img.news.content_en or img.news.content or '')[:150] }}...</p>
+          {% elif img.news_id %}
             <h4>
-              <a href="{{ url_for('news') }}?q={{ img.news_title }}" rel="noopener noreferrer">
-                🔎 Search for: {{ img.news_title }}
+              <a href="{{ url_for('news_detail_en', news_id=img.news_id) }}" rel="noopener noreferrer">
+                📌 {{ caption }}
               </a>
             </h4>
-          {% endif %}
-          {% if img.news_content %}
-            <p class="mb-0 small text-white">{{ img.news_content[:150] }}...</p>
+            {% if img.news_content_en or img.news_content %}
+              <p class="mb-0 small text-white">{{ ((img.news_content_en or img.news_content) or '')[:150] }}...</p>
+            {% endif %}
+          {% elif img.news_title or img.news_title_en %}
+            <h4>
+              <a href="{{ url_for('news_en') }}?q={{ (img.news_title_en or img.news_title) }}" rel="noopener noreferrer">
+                🔎 Search for: {{ (img.news_title_en or img.news_title) }}
+              </a>
+            </h4>
+            {% if img.news_content_en or img.news_content %}
+              <p class="mb-0 small text-white">{{ ((img.news_content_en or img.news_content) or '')[:150] }}...</p>
+            {% endif %}
+          {% else %}
+            <h4 class="mb-0">{{ caption }}</h4>
           {% endif %}
         </div>
       </div>

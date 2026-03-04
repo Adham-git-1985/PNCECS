@@ -1429,3 +1429,22 @@ html[dir="ltr"] .latest-news-card .card-text{
   }
 }
 
+
+
+/* PNCECS unified footer (حقوق + مطوّر) */
+.pn-footer{
+  background: rgba(255,255,255,.95) !important;
+  color: #222 !important;
+  border-top: 1px solid rgba(0,0,0,.08) !important;
+}
+.pn-footer .text-muted{ color: rgba(0,0,0,.55) !important; }
+
+/* Lightbox2 fixes (overlay above headers/ads + واضح زر الإغلاق) */
+.lightboxOverlay{ z-index: 99998 !important; }
+.lightbox{ z-index: 99999 !important; }
+.lb-data .lb-close{
+  opacity: 1 !important;
+  width: 44px !important;
+  height: 44px !important;
+  background-size: 44px 44px !important;
+}

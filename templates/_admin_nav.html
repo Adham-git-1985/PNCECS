@@ -1,0 +1,32 @@
+{# شريط تنقّل مبسّط لصفحات لوحة التحكم #}
+<div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+  <a class="btn btn-outline-secondary btn-sm" href="javascript:history.back()">
+    {{ '⬅️ Back' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '⬅️ رجوع' }}
+  </a>
+
+  <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin') }}">
+    {{ '🏠 Control Panel' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '🏠 لوحة التحكم' }}
+  </a>
+
+  <a class="btn btn-outline-success btn-sm" href="{{ url_for('add_news') }}">
+    {{ '📰 Manage News' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '📰 إدارة الأخبار' }}
+  </a>
+
+  <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin_top_images') }}">
+    {{ '🖼️ Top Images' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '🖼️ الصور العلوية' }}
+  </a>
+
+  <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin_announcements') }}">
+    {{ '📢 Announcements' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '📢 الإعلانات' }}
+  </a>
+
+  <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin_versions') }}">
+    {{ '📄 Versions' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '📄 الإصدارات' }}
+  </a>
+
+  <span class="flex-grow-1"></span>
+
+  <a class="btn btn-outline-danger btn-sm" href="{{ url_for('logout') }}">
+    {{ '🚪 Logout' if (session.get('lang','ar')=='en' or (g.lang if g is defined else 'ar')=='en') else '🚪 تسجيل الخروج' }}
+  </a>
+</div>

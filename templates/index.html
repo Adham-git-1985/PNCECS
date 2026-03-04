@@ -95,7 +95,13 @@
 
               <!-- العنوان يجب أن يظهر على الموبايل أيضاً (بدون كسر حركة السلايدر) -->
               <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
-                {% if img.news_id %}
+                {% if img.news_id and img.news %}
+                  <h4>
+                    <a href="{{ url_for('news_detail', news_id=img.news_id) }}" rel="noopener noreferrer">
+                      📌 {{ l(img.news, 'title') or pick('تفاصيل الخبر', 'News details') }}
+                    </a>
+                  </h4>
+                {% elif img.news_id %}
                   <h4>
                     <a href="{{ url_for('news_detail', news_id=img.news_id) }}" rel="noopener noreferrer">
                       📌 {{ l(img, 'description') or pick('تفاصيل الخبر', 'News details') }}
@@ -108,7 +114,9 @@
                     </a>
                   </h4>
                 {% endif %}
-                {% if img.news_content %}
+                {% if img.news_id and img.news %}
+                  <p class="mb-0 small text-white">{{ (l(img.news, 'content') or '')[:150] }}...</p>
+                {% elif img.news_content %}
                   <p class="mb-0 small text-white">{{ (l(img, 'news_content') or '')[:150] }}...</p>
                 {% endif %}
               </div>

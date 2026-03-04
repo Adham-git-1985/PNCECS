@@ -34,7 +34,7 @@
                 <img
                     src="{{ url_for('static', filename='images/gallery/' ~ image.filename) }}"
                     class="card-img-top"
-                    alt="{{ image.title or ('Image' if lang=='en' else 'صورة') }}"
+                    alt="{{ (image.title_en if lang=='en' and image.title_en else image.title) or ('Image' if lang=='en' else 'صورة') }}"
                 >
                 {% endif %}
                 <div class="card-body">
